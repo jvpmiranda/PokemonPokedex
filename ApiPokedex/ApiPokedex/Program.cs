@@ -19,7 +19,7 @@ builder.Services.AddScoped<LoggerMiddleware>();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
-//builder.Logging.AddConsole();
+builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
 
