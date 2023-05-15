@@ -1,3 +1,4 @@
+using ApiPokedex.Middleware;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
@@ -13,9 +14,19 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<ExceptionHandlerMiddleware>();
+builder.Services.AddScoped<LoggerMiddleware>();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
+//builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
+
 var app = builder.Build();
 
-app.UseMiddleware<ApiPokedex.Middleware.ExceptionHandlerMiddleware>();
+app.UseLoggerMiddleware();
+app.UseExceptionHandlerMiddleware();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -26,8 +37,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
-app.UseAuthorization();
+//app.UseAuthentication();
+//app.UseAuthorization();
 
 app.MapControllers();
 
