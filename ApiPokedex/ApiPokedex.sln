@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiPokedex", "ApiPokedex\ApiPokedex.csproj", "{DE618D9C-A8D6-40BF-93BD-44B419351F9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiPokedex", "ApiPokedex\ApiPokedex.csproj", "{DE618D9C-A8D6-40BF-93BD-44B419351F9D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlServerDataBaseConnection", "SqlServerDataBaseConnection\SqlServerDataBaseConnection.csproj", "{A238CD50-228C-49F5-9226-48E48B1B895E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{DE618D9C-A8D6-40BF-93BD-44B419351F9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE618D9C-A8D6-40BF-93BD-44B419351F9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE618D9C-A8D6-40BF-93BD-44B419351F9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A238CD50-228C-49F5-9226-48E48B1B895E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A238CD50-228C-49F5-9226-48E48B1B895E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A238CD50-228C-49F5-9226-48E48B1B895E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A238CD50-228C-49F5-9226-48E48B1B895E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

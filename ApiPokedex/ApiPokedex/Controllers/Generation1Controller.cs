@@ -22,7 +22,7 @@ namespace ApiPokedex.Controllers
         [Route("Get")]
         public Pokemon Get([FromQuery]int pokemonId)
         {
-            throw new Exception($"Erro no metodo GET com o parametro {id}");
+            throw new Exception($"Erro no metodo GET com o parametro {pokemonId}");
         }
 
         [HttpPost]

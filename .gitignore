@@ -1,4 +1,6 @@
 ApiPokedex/ApiPokedex/bin/*
 ApiPokedex/ApiPokedex/obj/*
+ApiPokedex/SqlServerDataBaseConnection/bin/*
+ApiPokedex/SqlServerDataBaseConnection/obj/*
 ApiPokedex/.vs/*
 appsettings.json
