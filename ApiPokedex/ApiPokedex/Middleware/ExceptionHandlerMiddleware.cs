@@ -1,5 +1,4 @@
 ﻿using ApiPokedex.Contract;
-using System.Text.Json;
 
 namespace ApiPokedex.Middleware
 {

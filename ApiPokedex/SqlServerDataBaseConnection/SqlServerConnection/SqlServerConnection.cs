@@ -5,25 +5,18 @@ using System.Data.SqlClient;
 
 namespace SqlServerDataBaseConnection.SQLConnection
 {
-    internal class SqlServerConnection : ISqlConnection
+    public class SqlServerConnection : ISqlConnection
     {
-        private readonly IDataBaseConnection _databaseConnection;
+        private readonly string _connectionString;
 
-        public SqlServerConnection(IDataBaseConnection databaseConnection)
+        public SqlServerConnection(string connectionString)
         {
-            _databaseConnection = databaseConnection;
+            _connectionString = connectionString;
         }
 
         public IDbConnection CreateConnection()
         {
-            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-
-            builder.DataSource = _databaseConnection.DataSource;
-            builder.UserID = _databaseConnection.UserId;
-            builder.Password = _databaseConnection.Password;
-            builder.InitialCatalog = _databaseConnection.DatabaseName;
-
-            var conn = new SqlConnection(builder.ConnectionString);
+            var conn = new SqlConnection(_connectionString);
             conn.Open();
             return conn;
         }
