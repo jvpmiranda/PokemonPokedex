@@ -1,4 +1,4 @@
-﻿using ApiPokedex.Contract;
+﻿using ApiPokedex.Contract.v1;
 
 namespace ApiPokedex.Middleware
 {

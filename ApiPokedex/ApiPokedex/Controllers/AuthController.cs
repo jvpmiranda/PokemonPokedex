@@ -1,3 +1,4 @@
+using ApiPokedex.Options;
 using ApiPokedex.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +10,7 @@ using System.Text;
 namespace ApiPokedex.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("auth")]
     public class AuthController : ControllerBase
     {
         public JwtSettings _jwtSettings { get; set; }
@@ -20,7 +21,7 @@ namespace ApiPokedex.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("Token")]
+        [HttpPost("token")]
         public ActionResult Token(string name)
         {
 

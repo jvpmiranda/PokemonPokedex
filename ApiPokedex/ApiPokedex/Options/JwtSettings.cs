@@ -1,4 +1,4 @@
-﻿namespace ApiPokedex.Services;
+﻿namespace ApiPokedex.Options;
 
 public class JwtSettings
 {

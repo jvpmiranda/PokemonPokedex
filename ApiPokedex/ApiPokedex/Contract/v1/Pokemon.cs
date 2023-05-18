@@ -1,4 +1,4 @@
-namespace ApiPokedex.Contract
+namespace ApiPokedex.Contract.v1
 {
     public class Pokemon
     {

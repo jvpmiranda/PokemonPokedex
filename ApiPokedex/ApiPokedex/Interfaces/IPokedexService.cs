@@ -1,13 +1,13 @@
-﻿using ApiPokedex.Contract;
+﻿using SqlServerDataBaseConnection.Model;
 
 namespace ApiPokedex.Interfaces
 {
     public interface IPokedexService
     {
         void Delete(int pokemonId);
-        IEnumerable<Pokemon> GetPokemon();
-        Pokemon GetPokemon(int pokemonId);
-        void Insert(Pokemon pokemon);
-        void Update(Pokemon pokemon);
+        IEnumerable<PokemonPokedex> GetPokemon();
+        PokemonPokedex GetPokemon(int pokemonId);
+        void Insert(PokemonPokedex pokemon);
+        void Update(PokemonPokedex pokemon);
     }
 }
