@@ -1,4 +1,4 @@
-﻿using ApiPokedex.Models;
+﻿using ApiPokedex.Contract;
 
 namespace ApiPokedex.Interfaces
 {

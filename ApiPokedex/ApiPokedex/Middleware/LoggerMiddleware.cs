@@ -25,7 +25,7 @@ namespace ApiPokedex.Middleware
 
                     memStream.Position = 0;
                     string responseBody = new StreamReader(memStream).ReadToEnd();
-                    _logger.LogInformation("Response: {response}", responseBody);
+                    _logger.LogInformation("Response status code: {statusCode} - Response: {response}", context.Response.StatusCode, responseBody);
 
                     memStream.Position = 0;
                     await memStream.CopyToAsync(originalBody);

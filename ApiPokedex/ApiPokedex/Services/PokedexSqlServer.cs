@@ -1,14 +1,14 @@
-﻿using ApiPokedex.Interfaces;
-using ApiPokedex.Models;
+﻿using ApiPokedex.Contract;
+using ApiPokedex.Interfaces;
 using SqlServerDataBaseConnection.Interface;
 using SqlServerDataBaseConnection.SQLConnection;
 using System.Data;
 
 namespace ApiPokedex.Services;
 
-public class PokedexService : SqlServerQuery, IPokedexService
+public class PokedexSqlServer : SqlServerQuery, IPokedexService
 {
-    public PokedexService(ISqlConnection sqlConnection) : base(sqlConnection) { }
+    public PokedexSqlServer(ISqlConnection sqlConnection) : base(sqlConnection) { }
 
     public IEnumerable<Pokemon> GetPokemon()
     {
@@ -45,17 +45,17 @@ public class PokedexService : SqlServerQuery, IPokedexService
 
     public void Insert(Pokemon pokemon)
     {
-        Execute($"insert into pokemon (id, identifier) values ({pokemon.PokemonId}, {pokemon.PokemonName})");
+        Execute($"insert into pokemon (id, identifier) values ('{pokemon.PokemonId}', '{pokemon.PokemonName}')");
     }
 
     public void Update(Pokemon pokemon)
     {
-        Execute($"update pokemon set identifier = {pokemon.PokemonName} where id = {pokemon.PokemonId}");
+        Execute($"update pokemon set identifier = '{pokemon.PokemonName}' where 1 = 2 and id = {pokemon.PokemonId}");
     }
 
     public void Delete(int pokemonId)
     {
-        Execute($"Delete from pokemons where id = {pokemonId}");
+        Execute($"Delete from pokemon where 1 = 2 and id = {pokemonId}");
     }
 
 }
