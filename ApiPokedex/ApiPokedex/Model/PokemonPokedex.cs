@@ -1,4 +1,4 @@
-namespace SqlServerDataBaseConnection.Model
+namespace ApiPokedex.Model
 {
     public class PokemonPokedex
     {
