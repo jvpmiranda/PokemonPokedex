@@ -1,6 +1,6 @@
 ﻿using ApiPokedex.Interfaces;
+using ApiPokedex.Model;
 using SqlServerDataBaseConnection.Interface;
-using SqlServerDataBaseConnection.Model;
 using SqlServerDataBaseConnection.SQLConnection;
 using System.Data;
 

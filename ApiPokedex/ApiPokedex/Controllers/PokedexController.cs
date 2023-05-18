@@ -1,9 +1,9 @@
 using ApiPokedex.Contract.v1;
 using ApiPokedex.Interfaces;
+using ApiPokedex.Model;
 using ApiPokedex.Route;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SqlServerDataBaseConnection.Model;
 
 namespace ApiPokedex.Controllers
 {

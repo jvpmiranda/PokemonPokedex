@@ -1,4 +1,4 @@
-﻿using SqlServerDataBaseConnection.Model;
+﻿using ApiPokedex.Model;
 
 namespace ApiPokedex.Interfaces
 {
