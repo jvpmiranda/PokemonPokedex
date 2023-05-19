@@ -1,6 +1,6 @@
 namespace ApiPokedex.Contract.v1
 {
-    public class Pokemon
+    public class PokemonV1
     {
         public int PokemonId { get; set; }
 

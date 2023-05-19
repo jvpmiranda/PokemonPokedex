@@ -1,7 +1,7 @@
-using ApiPokedex.Interfaces;
+using PokedexServices.Interfaces;
 using ApiPokedex.Middleware;
 using ApiPokedex.Options;
-using ApiPokedex.Services;
+using PokedexServices.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
@@ -13,10 +13,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using SqlServerDataBaseConnection.Interface;
-using SqlServerDataBaseConnection.SQLConnection;
 using System.Data.SqlClient;
 using System.Text;
+using PokedexEF.DataAccess;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -89,11 +89,18 @@ builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
-//builder.Services.AddScoped<IDataBaseConnection>((serv) => new DataBaseConnection(builder.Configuration.GetConnectionString("ConnectionString")));
-builder.Services.AddScoped<ISqlConnection>((serv) => new SqlServerConnection(builder.Configuration.GetConnectionString("ConnectionString")));
-builder.Services.AddTransient<IPokedexService, PokedexSqlServer>();
+var typeOfConnection = builder.Configuration.GetConnectionString("TypeOfDataBaseConnection")!;
+if (typeOfConnection == "ADO")
+    builder.Services.AddTransient<IPokedexService>(s => new PokedexADOSqlServer(builder.Configuration.GetConnectionString("Pokedex")!));
+else if (typeOfConnection == "EF")
+{
+    builder.Services.AddTransient<IPokedexService, PokedexEntityFramework>();
 
-
+    builder.Services.AddDbContext<DbPokedexContext>(options =>
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("Pokedex")!);
+    });
+}
 var app = builder.Build();
 
 app.UseLoggerMiddleware();

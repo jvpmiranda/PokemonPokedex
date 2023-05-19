@@ -1,5 +1,4 @@
 using ApiPokedex.Options;
-using ApiPokedex.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;

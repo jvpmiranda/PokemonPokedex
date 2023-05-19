@@ -1,9 +1,9 @@
 using ApiPokedex.Contract.v1;
-using ApiPokedex.Interfaces;
-using ApiPokedex.Model;
 using ApiPokedex.Route;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PokedexServices.Interfaces;
+using PokedexServices.Model;
 
 namespace ApiPokedex.Controllers
 {
@@ -21,14 +21,14 @@ namespace ApiPokedex.Controllers
 
         [HttpGet(Routes.Get)]
         [MapToApiVersion("1.0")]
-        public IEnumerable<Pokemon> GetAllv1()
+        public IEnumerable<PokemonV1> GetAllv1()
         {
             return _pokedex.GetPokemon().Select(e => ConvertToContract(e));
         }
 
         [HttpGet(Routes.GetId)]
         [MapToApiVersion("1.0")]
-        public Pokemon Get(string pokemonId)
+        public PokemonV1 Get(string pokemonId)
         {
             return ConvertToContract(_pokedex.GetPokemon(Convert.ToInt32(pokemonId)));
         }
@@ -36,7 +36,7 @@ namespace ApiPokedex.Controllers
         [Authorize(Roles = "user")]
         [HttpPost(Routes.Post)]
         [MapToApiVersion("1.0")]
-        public ActionResult Post(Pokemon pokemon)
+        public ActionResult Post(PokemonV1 pokemon)
         {
             _pokedex.Insert(ConvertToModel(pokemon));
             return Ok();
@@ -45,7 +45,7 @@ namespace ApiPokedex.Controllers
         [Authorize(Roles = "user, admin")]
         [HttpPut(Routes.Put)]
         [MapToApiVersion("1.0")]
-        public ActionResult Put(Pokemon pokemon)
+        public ActionResult Put(PokemonV1 pokemon)
         {
             _pokedex.Update(ConvertToModel(pokemon));
             return Ok();
@@ -60,22 +60,22 @@ namespace ApiPokedex.Controllers
             return Ok();
         }
 
-        private PokemonPokedex ConvertToModel(Pokemon pokemon)
+        private PokemonModel ConvertToModel(PokemonV1 pokemon)
         {
-            PokemonPokedex pok = new PokemonPokedex()
+            PokemonModel pok = new PokemonModel()
             {
                 Id = pokemon.PokemonId,
-                Name = pokemon.PokemonName
+                Identifier = pokemon.PokemonName
             };
             return pok;
         }
 
-        private Pokemon ConvertToContract(PokemonPokedex pokemon)
+        private PokemonV1 ConvertToContract(PokemonModel pokemon)
         {
-            Pokemon pok = new Pokemon()
+            PokemonV1 pok = new PokemonV1()
             {
                 PokemonId = pokemon.Id,
-                PokemonName = pokemon.Name
+                PokemonName = pokemon.Identifier
             };
             return pok;
         }

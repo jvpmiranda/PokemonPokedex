@@ -1,17 +1,17 @@
-﻿using SqlServerDataBaseConnection.Interface;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace SqlServerDataBaseConnection.SQLConnection
+namespace SqlServerADOConnection.SQLConnection
 {
     public abstract class SqlServerQuery
     {
-        public SqlServerQuery(ISqlConnection sqlConnection)
+        public SqlServerQuery(string connectionString)
         {
-            SqlConnection = sqlConnection;
+            ConnectionString = connectionString;
         }
 
-        protected ISqlConnection SqlConnection;
+        protected string ConnectionString;
 
         protected void Execute(string sqlCommand)
         {
@@ -22,7 +22,7 @@ namespace SqlServerDataBaseConnection.SQLConnection
             }
             finally
             {
-                SqlConnection.CloseConnection(command.Connection);
+                CloseConnection(command.Connection);
             }
         }
 
@@ -38,15 +38,29 @@ namespace SqlServerDataBaseConnection.SQLConnection
             }
             finally
             {
-                SqlConnection.CloseConnection(command.Connection);
+                CloseConnection(command.Connection);
             }
         }
 
         private SqlCommand CreateConnection(string sqlCommand)
         {
             SqlCommand command = new SqlCommand(sqlCommand);
-            command.Connection = (SqlConnection)SqlConnection.CreateConnection();
+            command.Connection = CreateConnection();
             return command;
         }
+
+        private SqlConnection CreateConnection()
+        {
+            var conn = new SqlConnection(ConnectionString);
+            conn.Open();
+            return conn;
+        }
+
+        private void CloseConnection(SqlConnection connection)
+        {
+            ArgumentNullException.ThrowIfNull(connection);
+            connection.Close();
+        }
+
     }
 }
