@@ -1,36 +1,36 @@
-using ApiPokedex.Contract.v1;
+using ApiPokedex.Contract;
 using ApiPokedex.Route;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PokedexServices.Interfaces;
 using PokedexServices.Model;
 
-namespace ApiPokedex.Controllers
+namespace ApiPokedex.Controllers.v1
 {
     [ApiController]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/Pokedex")]
     [ApiVersion("1.0")]
-    public class PokedexController : ControllerBase
+    public class PokedexV1Controller : ControllerBase
     {
         private IPokedexService _pokedex { get; }
 
-        public PokedexController(IPokedexService pokedex)
+        public PokedexV1Controller(IPokedexService pokedex)
         {
             _pokedex = pokedex;
         }
 
         [HttpGet(Routes.Get)]
         [MapToApiVersion("1.0")]
-        public IEnumerable<PokemonV1> GetAllv1()
+        public ActionResult<IEnumerable<PokemonV1>> GetAllv1()
         {
-            return _pokedex.GetPokemon().Select(e => ConvertToContract(e));
+            return Ok(_pokedex.GetPokemon().Select(e => ConvertToContractV1(e)));
         }
 
         [HttpGet(Routes.GetId)]
         [MapToApiVersion("1.0")]
-        public PokemonV1 Get(string pokemonId)
+        public ActionResult<PokemonV1> Get(string pokemonId)
         {
-            return ConvertToContract(_pokedex.GetPokemon(Convert.ToInt32(pokemonId)));
+            return Ok(ConvertToContractV1(_pokedex.GetPokemon(Convert.ToInt32(pokemonId))));
         }
 
         [Authorize(Roles = "user")]
@@ -70,7 +70,7 @@ namespace ApiPokedex.Controllers
             return pok;
         }
 
-        private PokemonV1 ConvertToContract(PokemonModel pokemon)
+        private PokemonV1 ConvertToContractV1(PokemonModel pokemon)
         {
             PokemonV1 pok = new PokemonV1()
             {

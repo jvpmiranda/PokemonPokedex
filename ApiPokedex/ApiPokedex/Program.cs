@@ -17,6 +17,7 @@ using System.Data.SqlClient;
 using System.Text;
 using PokedexEF.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using SqlServerADOConnection.SQLConnection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -91,7 +92,10 @@ builder.Logging.AddDebug();
 
 var typeOfConnection = builder.Configuration.GetConnectionString("TypeOfDataBaseConnection")!;
 if (typeOfConnection == "ADO")
-    builder.Services.AddTransient<IPokedexService>(s => new PokedexADOSqlServer(builder.Configuration.GetConnectionString("Pokedex")!));
+{
+    builder.Services.AddTransient<ISqlServerQuery>(s => new SqlServerQuery(builder.Configuration.GetConnectionString("Pokedex")!));
+    builder.Services.AddTransient<IPokedexService, PokedexADOSqlServer>();
+}
 else if (typeOfConnection == "EF")
 {
     builder.Services.AddTransient<IPokedexService, PokedexEntityFramework>();

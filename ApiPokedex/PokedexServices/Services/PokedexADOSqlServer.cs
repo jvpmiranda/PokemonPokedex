@@ -2,16 +2,22 @@
 using PokedexServices.Model;
 using SqlServerADOConnection.SQLConnection;
 using System.Data;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PokedexServices.Services;
 
-public class PokedexADOSqlServer : SqlServerQuery, IPokedexService
+public class PokedexADOSqlServer : IPokedexService
 {
-    public PokedexADOSqlServer(string connectionString) : base(connectionString) { }
+    private readonly ISqlServerQuery _sql;
+
+    public PokedexADOSqlServer(ISqlServerQuery sql)
+    {
+        _sql = sql;
+    }
 
     public IEnumerable<PokemonModel> GetPokemon()
     {
-        DataSet ds = ExecuteQuery($"select top 10 * from pokemon");
+        DataSet ds = _sql.ExecuteQuery("select top 10 * from pokemon");
 
         if (ds == null || ds.Tables[0].Rows.Count == 0)
             return Enumerable.Empty<PokemonModel>();
@@ -25,24 +31,24 @@ public class PokedexADOSqlServer : SqlServerQuery, IPokedexService
 
     public PokemonModel GetPokemon(int pokemonId)
     {
-        DataSet ds = ExecuteQuery($"select * from pokemon where id = {pokemonId}");
+        DataSet ds = _sql.ExecuteQuery($"select * from pokemon where id = {pokemonId}");
 
         return ReadDataSet(ds.Tables[0].Rows[0]);
     }
 
     public void Insert(PokemonModel pokemon)
     {
-        Execute($"insert into pokemon (id, identifier) values ('{pokemon.Id}', '{pokemon.Identifier}')");
+        _sql.ExecuteNonQuery($"insert into pokemon (id, identifier) values ('{pokemon.Id}', '{pokemon.Identifier}')");
     }
 
     public void Update(PokemonModel pokemon)
     {
-        Execute($"update pokemon set identifier = '{pokemon.Identifier}' where 1 = 2 and id = {pokemon.Id}");
+        _sql.ExecuteNonQuery($"update pokemon set identifier = '{pokemon.Identifier}' id = {pokemon.Id}");
     }
 
     public void Delete(int pokemonId)
     {
-        Execute($"Delete from pokemon where 1 = 2 and id = {pokemonId}");
+        _sql.ExecuteNonQuery($"Delete from pokemon id = {pokemonId}");
     }
 
     private PokemonModel ReadDataSet(DataRow ds)

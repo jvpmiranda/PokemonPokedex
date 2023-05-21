@@ -4,31 +4,91 @@ using System.Data.SqlClient;
 
 namespace SqlServerADOConnection.SQLConnection
 {
-    public abstract class SqlServerQuery
+    public class SqlServerQuery : ISqlServerQuery
     {
+        private SqlConnection _sqlConnection;
+        private SqlTransaction _sqlTransaction;
+        private readonly string _connectionString;
+        
+        
         public SqlServerQuery(string connectionString)
         {
-            ConnectionString = connectionString;
+            _connectionString = connectionString;
         }
+        
+        #region ISqlServerQuery
 
-        protected string ConnectionString;
-
-        protected void Execute(string sqlCommand)
+        public void ExecuteNonQuery(string sqlCommand)
         {
             SqlCommand command = CreateConnection(sqlCommand);
+            ExecuteNonQuery(command);
+        }
+
+        public DataSet ExecuteQuery(string sqlCommand)
+        {
+            SqlCommand command = CreateConnection(sqlCommand);
+            return ExecuteReadDataSet(command);
+        }
+
+        public void BeginTransaction()
+        {
+            _sqlTransaction = _sqlConnection.BeginTransaction();
+        }
+
+        public void CommitTransaction()
+        {
+            _sqlTransaction.Commit();
+            _sqlTransaction = null;
+            CloseConnection();
+        }
+
+        public void RollbackTransaction()
+        {
+            _sqlTransaction.Rollback();
+            _sqlTransaction = null;
+            CloseConnection();
+        }
+
+        public void ExecuteStoredProcedure<T>(string procName, T parameters)
+        {
+            SqlCommand command = CreateSqlCommandStoredProcedure(procName, parameters);
+            ExecuteNonQuery(command);
+        }
+
+        public DataSet ReadStoredProcedure<T>(string procName, T parameters)
+        {
+            SqlCommand command = CreateSqlCommandStoredProcedure(procName, parameters);
+            return ExecuteReadDataSet(command);
+        }
+        #endregion ISqlServerQuery
+
+        private void ExecuteNonQuery(SqlCommand command)
+        {
             try
             {
                 command.ExecuteNonQuery();
             }
             finally
             {
-                CloseConnection(command.Connection);
+                CloseConnection();
             }
         }
 
-        protected DataSet ExecuteQuery(string sqlCommand)
+        private SqlCommand CreateSqlCommandStoredProcedure<T>(string procName, T parameters)
         {
-            SqlCommand command = CreateConnection(sqlCommand);
+            SqlCommand command = CreateConnection(procName);
+            command.CommandType = CommandType.StoredProcedure;
+            foreach (var prop in typeof(T).GetProperties())
+            {
+                var value = prop.GetValue(parameters).ToString();
+                command.Parameters.Add(new SqlParameter(prop.Name, value));
+            }
+
+            return command;
+        }
+
+        private DataSet ExecuteReadDataSet(SqlCommand command)
+        {
             try
             {
                 IDataAdapter dataAdap = new SqlDataAdapter(command);
@@ -38,29 +98,34 @@ namespace SqlServerADOConnection.SQLConnection
             }
             finally
             {
-                CloseConnection(command.Connection);
+                CloseConnection();
             }
         }
 
         private SqlCommand CreateConnection(string sqlCommand)
         {
-            SqlCommand command = new SqlCommand(sqlCommand);
-            command.Connection = CreateConnection();
+            ArgumentNullException.ThrowIfNull(sqlCommand);
+            CreateConnection();
+            SqlCommand command = new SqlCommand(sqlCommand, _sqlConnection, _sqlTransaction);
+            command.Connection.Open();
             return command;
         }
 
-        private SqlConnection CreateConnection()
+        private void CreateConnection()
         {
-            var conn = new SqlConnection(ConnectionString);
-            conn.Open();
-            return conn;
+            if (_sqlTransaction == null)
+                _sqlConnection = new SqlConnection(_connectionString);
         }
 
-        private void CloseConnection(SqlConnection connection)
+        private void CloseConnection()
         {
-            ArgumentNullException.ThrowIfNull(connection);
-            connection.Close();
-        }
+            ArgumentNullException.ThrowIfNull(_sqlConnection);
 
+            if (_sqlTransaction == null)
+            {
+                _sqlConnection.Close();
+                _sqlConnection = null;
+            }
+        }
     }
 }
