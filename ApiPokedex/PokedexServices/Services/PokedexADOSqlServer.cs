@@ -2,15 +2,14 @@
 using PokedexServices.Model;
 using SqlServerADOConnection.SQLConnection;
 using System.Data;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace PokedexServices.Services;
 
 public class PokedexADOSqlServer : IPokedexService
 {
-    private readonly ISqlServerQuery _sql;
+    private readonly ISqlServerADOQuery _sql;
 
-    public PokedexADOSqlServer(ISqlServerQuery sql)
+    public PokedexADOSqlServer(ISqlServerADOQuery sql)
     {
         _sql = sql;
     }

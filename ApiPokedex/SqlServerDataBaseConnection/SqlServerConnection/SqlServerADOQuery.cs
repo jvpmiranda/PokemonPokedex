@@ -4,14 +4,14 @@ using System.Data.SqlClient;
 
 namespace SqlServerADOConnection.SQLConnection
 {
-    public class SqlServerQuery : ISqlServerQuery
+    public class SqlServerADOQuery : ISqlServerADOQuery
     {
         private SqlConnection _sqlConnection;
         private SqlTransaction _sqlTransaction;
         private readonly string _connectionString;
         
         
-        public SqlServerQuery(string connectionString)
+        public SqlServerADOQuery(string connectionString)
         {
             _connectionString = connectionString;
         }
@@ -49,13 +49,13 @@ namespace SqlServerADOConnection.SQLConnection
             CloseConnection();
         }
 
-        public void ExecuteStoredProcedure<T>(string procName, T parameters)
+        public void ExecuteNonQueryStoredProcedure<T>(string procName, T parameters)
         {
             SqlCommand command = CreateSqlCommandStoredProcedure(procName, parameters);
             ExecuteNonQuery(command);
         }
 
-        public DataSet ReadStoredProcedure<T>(string procName, T parameters)
+        public DataSet ExecuteQueryStoredProcedure<T>(string procName, T parameters)
         {
             SqlCommand command = CreateSqlCommandStoredProcedure(procName, parameters);
             return ExecuteReadDataSet(command);

@@ -1,23 +1,17 @@
-using PokedexServices.Interfaces;
 using ApiPokedex.Middleware;
 using ApiPokedex.Options;
-using PokedexServices.Services;
-using Microsoft.AspNetCore.Authentication;
+using DapperConnection.DataAccess;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.Identity.Web;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Data.SqlClient;
-using System.Text;
 using PokedexEF.DataAccess;
-using Microsoft.EntityFrameworkCore;
+using PokedexServices.Interfaces;
+using PokedexServices.Services;
 using SqlServerADOConnection.SQLConnection;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,21 +50,21 @@ builder.Services.AddApiVersioning(option =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
-                //x =>
-                //{
-                //    var secutiry = new Dictionary<string, IEnumerable<string>>()
-                //    {
-                //        { "Bearer", new string[0]}
-                //    };
-                //    x.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme()
-                //    {
-                //        Description = "TOKEN da API DA POKEDEX",
-                //        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
-                //        In = ParameterLocation.Header,
-                //        Name = "Authorization",
-                //    });
-                //    x.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement());
-                //}
+                x =>
+                {
+                    var secutiry = new Dictionary<string, IEnumerable<string>>()
+                    {
+                        { "Bearer", new string[0]}
+                    };
+                    x.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme()
+                    {
+                        Description = "TOKEN da API DA POKEDEX",
+                        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+                        In = ParameterLocation.Header,
+                        Name = "Authorization",
+                    });
+                    x.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement());
+                }
                 );
 
 // Add ApiExplorer to discover versions
@@ -93,7 +87,7 @@ builder.Logging.AddDebug();
 var typeOfConnection = builder.Configuration.GetConnectionString("TypeOfDataBaseConnection")!;
 if (typeOfConnection == "ADO")
 {
-    builder.Services.AddTransient<ISqlServerQuery>(s => new SqlServerQuery(builder.Configuration.GetConnectionString("Pokedex")!));
+    builder.Services.AddTransient<ISqlServerADOQuery>(s => new SqlServerADOQuery(builder.Configuration.GetConnectionString("Pokedex")!));
     builder.Services.AddTransient<IPokedexService, PokedexADOSqlServer>();
 }
 else if (typeOfConnection == "EF")
@@ -105,7 +99,12 @@ else if (typeOfConnection == "EF")
         options.UseSqlServer(builder.Configuration.GetConnectionString("Pokedex")!);
     });
 }
-var app = builder.Build();
+else if (typeOfConnection == "DAPPER")
+{
+    builder.Services.AddTransient<IPokedexService, PokedexDapper>();
+    builder.Services.AddTransient<ISqlDapperDataAccess>(s => new SqlDapperDataAccess(builder.Configuration.GetConnectionString("Pokedex")!)) ;
+}
+    var app = builder.Build();
 
 app.UseLoggerMiddleware();
 app.UseExceptionHandlerMiddleware();
