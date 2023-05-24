@@ -16,7 +16,7 @@ public class PokedexADOSqlServer : IPokedexService
 
     public IEnumerable<PokemonModel> GetPokemon()
     {
-        DataSet ds = _sql.ExecuteQuery("select top 10 * from pokemon");
+        DataSet ds = _sql.ExecuteQueryStoredProcedure("sp_pokedex_GetAllPokemon", new { });
 
         if (ds == null || ds.Tables[0].Rows.Count == 0)
             return Enumerable.Empty<PokemonModel>();
@@ -30,24 +30,24 @@ public class PokedexADOSqlServer : IPokedexService
 
     public PokemonModel GetPokemon(int pokemonId)
     {
-        DataSet ds = _sql.ExecuteQuery($"select * from pokemon where id = {pokemonId}");
+        DataSet ds = _sql.ExecuteQueryStoredProcedure("sp_pokedex_GetPokemon", new { id = pokemonId });
 
         return ReadDataSet(ds.Tables[0].Rows[0]);
     }
 
     public void Insert(PokemonModel pokemon)
     {
-        _sql.ExecuteNonQuery($"insert into pokemon (id, identifier) values ('{pokemon.Id}', '{pokemon.Identifier}')");
+        _sql.ExecuteNonQueryStoredProcedure("sp_pokedex_InsertPokemon", pokemon);
     }
 
     public void Update(PokemonModel pokemon)
     {
-        _sql.ExecuteNonQuery($"update pokemon set identifier = '{pokemon.Identifier}' id = {pokemon.Id}");
+        _sql.ExecuteNonQueryStoredProcedure("sp_pokedex_UpdatePokemon", pokemon);
     }
 
     public void Delete(int pokemonId)
     {
-        _sql.ExecuteNonQuery($"Delete from pokemon id = {pokemonId}");
+        _sql.ExecuteNonQueryStoredProcedure("sp_pokedex_DeletePokemon", new { Id = pokemonId });
     }
 
     private PokemonModel ReadDataSet(DataRow ds)
