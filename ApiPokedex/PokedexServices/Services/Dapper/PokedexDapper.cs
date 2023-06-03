@@ -1,12 +1,13 @@
 ﻿using DapperConnection.DataAccess;
 using PokedexServices.Interfaces;
 using PokedexServices.Model;
+using System;
 
-namespace PokedexServices.Services;
+namespace PokedexServices.Services.Dapper;
 
 public class PokedexDapper : IPokedexService
 {
-    private readonly ISqlDapperDataAccess _sql;
+    protected readonly ISqlDapperDataAccess _sql;
 
     public PokedexDapper(ISqlDapperDataAccess sql)
     {
@@ -18,12 +19,16 @@ public class PokedexDapper : IPokedexService
         //return _sql.ExecuteQuery<PokemonModel, dynamic>("select top 10 * from pokemon", new { }).Result;
         return _sql.ExecuteQueryStoredProcedure<PokemonModel, dynamic>("sp_pokedex_GetAllPokemon", new { }).Result;
     }
-
     public PokemonModel GetPokemon(int pokemonId)
     {
-        //var result = _sql.ExecuteQuery<PokemonModel, dynamic>("select * from pokemon where id = @id", new { id = pokemonId }).Result;
-        var result = _sql.ExecuteQueryStoredProcedure<PokemonModel, dynamic>("sp_pokedex_GetPokemon", new { id = pokemonId }).Result;
-        return result.FirstOrDefault();
+        PokemonModel pokemon;
+        using (var queryResult = _sql.ExecuteQueryStoredProcedureMultiple<dynamic>("sp_pokedex_GetPokemon", new { pokemonId, versionId = 0 }).Result)
+        {
+            pokemon = queryResult.Read<PokemonModel>().ToList().First();
+            pokemon.Types = queryResult.Read<PokemonTypeModel>().ToList();
+        }
+
+        return pokemon;
     }
 
     public void Insert(PokemonModel pokemon)

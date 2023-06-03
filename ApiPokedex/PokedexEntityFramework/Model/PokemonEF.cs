@@ -25,7 +25,7 @@ public partial class PokemonEF
     public int Height { get; set; }
 
     [Column("weight")]
-    public int Weight { get; set; }
+    public double Weight { get; set; }
 
     [Column("order")]
     public int Order { get; set; }

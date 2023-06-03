@@ -2,9 +2,9 @@ namespace ApiPokedex.Route
 {
     public static class Routes
     {
-        public const string Get = "Get";
+        public const string Get = "GetAll";
 
-        public const string GetId = "Get/{pokemonId}";
+        public const string GetId = "Get";
 
         public const string Post = "Post";
 

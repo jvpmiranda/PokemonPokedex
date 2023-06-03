@@ -1,3 +1,6 @@
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+
 namespace ApiPokedex.Contract
 {
     public class PokemonV2
@@ -8,9 +11,15 @@ namespace ApiPokedex.Contract
 
         public int Height { get; set; }
 
-        public int Weight { get; set; }
-        
+        public double Weight { get; set; }
+
         public ICollection<PokemonTypeV2> Types { get; set; }
+
+        public int? EvolveFrom { get; set; }
+
+        public List<int> EvolveTo { get; set; }
+
+        public string Description { get; set; }
     }
 
     public class PokemonTypeV2

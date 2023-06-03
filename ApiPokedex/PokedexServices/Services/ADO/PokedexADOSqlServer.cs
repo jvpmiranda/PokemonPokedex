@@ -1,13 +1,14 @@
 ﻿using PokedexServices.Interfaces;
 using PokedexServices.Model;
 using SqlServerADOConnection.SQLConnection;
+using System;
 using System.Data;
 
-namespace PokedexServices.Services;
+namespace PokedexServices.Services.ADO;
 
 public class PokedexADOSqlServer : IPokedexService
 {
-    private readonly ISqlServerADOQuery _sql;
+    protected readonly ISqlServerADOQuery _sql;
 
     public PokedexADOSqlServer(ISqlServerADOQuery sql)
     {
@@ -30,7 +31,7 @@ public class PokedexADOSqlServer : IPokedexService
 
     public PokemonModel GetPokemon(int pokemonId)
     {
-        DataSet ds = _sql.ExecuteQueryStoredProcedure("sp_pokedex_GetPokemon", new { id = pokemonId });
+        DataSet ds = _sql.ExecuteQueryStoredProcedure("sp_pokedex_GetPokemon", new { pokemonId, versionId = DBNull.Value });
 
         return ReadDataSet(ds.Tables[0].Rows[0]);
     }
@@ -50,12 +51,14 @@ public class PokedexADOSqlServer : IPokedexService
         _sql.ExecuteNonQueryStoredProcedure("sp_pokedex_DeletePokemon", new { Id = pokemonId });
     }
 
-    private PokemonModel ReadDataSet(DataRow ds)
+    protected PokemonModel ReadDataSet(DataRow ds)
     {
         return new PokemonModel
         {
             Id = (int)ds["id"],
-            Identifier = ds["identifier"].ToString()
+            Identifier = ds["identifier"]?.ToString(),
+            Height = (int)ds["Height"],
+            Weight = (double)ds["Weight"]
         };
     }
 }

@@ -10,7 +10,6 @@ namespace SqlServerADOConnection.SQLConnection
         private SqlTransaction _sqlTransaction;
         private readonly string _connectionString;
         
-        
         public SqlServerADOQuery(string connectionString)
         {
             _connectionString = connectionString;

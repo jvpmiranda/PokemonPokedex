@@ -12,9 +12,9 @@ namespace ApiPokedex.Controllers.v2
     [ApiVersion("2.0")]
     public class PokedexV2Controller : ControllerBase
     {
-        private IPokedexService _pokedex { get; }
+        private IPokedexServiceV2 _pokedex { get; }
 
-        public PokedexV2Controller(IPokedexService pokedex)
+        public PokedexV2Controller(IPokedexServiceV2 pokedex)
         {
             _pokedex = pokedex;
         }
@@ -26,12 +26,12 @@ namespace ApiPokedex.Controllers.v2
             return Ok(_pokedex.GetPokemon().Select(e => ConvertToContractV2(e)));
         }
 
-        //[HttpGet(Routes.GetId)]
-        //[MapToApiVersion("2.0")]
-        //public ActionResult<PokemonV1> Get(string pokemonId)
-        //{
-        //    return Ok(ConvertToContractV1(_pokedex.GetPokemon(Convert.ToInt32(pokemonId))));
-        //}
+        [HttpGet(Routes.GetId)]
+        [MapToApiVersion("2.0")]
+        public ActionResult<PokemonV1> Get(int pokemonId, int versionId)
+        {
+            return Ok(ConvertToContractV2(_pokedex.GetPokemon(pokemonId, versionId)));
+        }
 
         //[Authorize(Roles = "user")]
         //[HttpPost(Routes.Post)]
@@ -99,6 +99,7 @@ namespace ApiPokedex.Controllers.v2
                     TypeId = type.Id,
                     TypeName = type.Identifier
                 });
+            pok.Description = pokemon.Description.FirstOrDefault()?.Description;               
 
             return pok;
         }

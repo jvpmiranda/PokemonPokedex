@@ -5,11 +5,11 @@ using PokedexServices.Interfaces;
 using PokedexServices.Model;
 using System.Data;
 
-namespace PokedexServices.Services;
+namespace PokedexServices.Services.EF;
 
 public class PokedexEntityFramework : IPokedexService
 {
-    private readonly DbPokedexContext _db;
+    protected readonly DbPokedexContext _db;
 
     public PokedexEntityFramework(DbPokedexContext db) => _db = db;
 
@@ -46,10 +46,10 @@ public class PokedexEntityFramework : IPokedexService
     public void Update(PokemonModel pokemon)
     {
         var ds = _db.Pokemons.Where(p => p.Id == pokemon.Id).FirstOrDefault();
-       if (ds != null)
-       {
-           ds.Identifier = pokemon.Identifier;
-           //_db.SaveChanges();
+        if (ds != null)
+        {
+            ds.Identifier = pokemon.Identifier;
+            //_db.SaveChanges();
         }
     }
 
@@ -63,7 +63,7 @@ public class PokedexEntityFramework : IPokedexService
         }
     }
 
-    private PokemonModel ReadDataSet(PokemonEF pok)
+    protected PokemonModel ReadDataSet(PokemonEF pok)
     {
         var pokemon = new PokemonModel
         {
