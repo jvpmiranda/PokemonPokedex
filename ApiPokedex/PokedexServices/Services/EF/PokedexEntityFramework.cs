@@ -13,12 +13,10 @@ public class PokedexEntityFramework : IPokedexService
 
     public PokedexEntityFramework(DbPokedexContext db) => _db = db;
 
-    public IEnumerable<PokemonModel> GetPokemon()
+    public IEnumerable<PokemonModel> GetPokemon(string pokemonKey)
     {
-        var ds = _db.Pokemons?.Take(10)
-            .Include(pok => pok.Species)
-            .Include(pok => pok.PokemonTypes)
-            .ThenInclude((typePokemon) => typePokemon.Type);
+        int.TryParse(pokemonKey, out int id);
+        var ds = _db.Pokemons.Where(p => p.Id == id || p.Identifier.Contains(pokemonKey));
 
         if (ds == null || ds.Count() == 0)
             return Enumerable.Empty<PokemonModel>();
@@ -28,13 +26,6 @@ public class PokedexEntityFramework : IPokedexService
             ls.Add(ReadDataSet(pokemon));
 
         return ls;
-    }
-
-    public PokemonModel GetPokemon(int pokemonId)
-    {
-        var ds = _db.Pokemons.Where(p => p.Id == pokemonId).FirstOrDefault();
-
-        return ReadDataSet(ds);
     }
 
     public void Insert(PokemonModel pokemon)
@@ -73,10 +64,10 @@ public class PokedexEntityFramework : IPokedexService
             Weight = pok.Weight
         };
 
-        pokemon.Types = new List<PokemonTypeModel>();
+        pokemon.Types = new List<TypeModel>();
         foreach (var type in pok.PokemonTypes)
         {
-            pokemon.Types.Add(new PokemonTypeModel
+            pokemon.Types.Add(new TypeModel
             {
                 Id = type.Type.Id,
                 Identifier = type.Type.Identifier

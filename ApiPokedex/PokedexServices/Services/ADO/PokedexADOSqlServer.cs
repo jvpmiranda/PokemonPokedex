@@ -15,9 +15,10 @@ public class PokedexADOSqlServer : IPokedexService
         _sql = sql;
     }
 
-    public IEnumerable<PokemonModel> GetPokemon()
+    public IEnumerable<PokemonModel> GetPokemon(string pokemonKey)
     {
-        DataSet ds = _sql.ExecuteQueryStoredProcedure("sp_pokedex_GetAllPokemon", new { });
+        int.TryParse(pokemonKey, out int id);
+        DataSet ds = _sql.ExecuteQueryStoredProcedure("sp_pokedex_GetPokemon", new { pokemonId = id });
 
         if (ds == null || ds.Tables[0].Rows.Count == 0)
             return Enumerable.Empty<PokemonModel>();
@@ -27,13 +28,6 @@ public class PokedexADOSqlServer : IPokedexService
             ls.Add(ReadDataSet(ds.Tables[0].Rows[i]));
 
         return ls;
-    }
-
-    public PokemonModel GetPokemon(int pokemonId)
-    {
-        DataSet ds = _sql.ExecuteQueryStoredProcedure("sp_pokedex_GetPokemon", new { pokemonId, versionId = DBNull.Value });
-
-        return ReadDataSet(ds.Tables[0].Rows[0]);
     }
 
     public void Insert(PokemonModel pokemon)

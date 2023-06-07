@@ -11,7 +11,6 @@ namespace ApiPokedex.Controllers
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
-    [ApiVersion("2.0")]
     public class AuthController : ControllerBase
     {
         public JwtSettings _jwtSettings { get; set; }
@@ -24,7 +23,6 @@ namespace ApiPokedex.Controllers
         [AllowAnonymous]
         [HttpPost("token")]
         [MapToApiVersion("1.0")]
-        [MapToApiVersion("2.0")]
         public ActionResult Token(string name)
         {
 

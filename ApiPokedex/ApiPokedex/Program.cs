@@ -92,12 +92,10 @@ if (typeOfConnection == "ADO")
 {
     builder.Services.AddTransient<ISqlServerADOQuery>(s => new SqlServerADOQuery(builder.Configuration.GetConnectionString("Pokedex")!));
     builder.Services.AddTransient<IPokedexService, PokedexADOSqlServer>();
-    builder.Services.AddTransient<IPokedexServiceV2, PokedexADOSqlServerV2>();
 }
 else if (typeOfConnection == "EF")
 {
     builder.Services.AddTransient<IPokedexService, PokedexEntityFramework>();
-    builder.Services.AddTransient<IPokedexServiceV2, PokedexEntityFrameworkV2>();
 
     builder.Services.AddDbContext<DbPokedexContext>(options =>
     {
@@ -107,7 +105,6 @@ else if (typeOfConnection == "EF")
 else if (typeOfConnection == "DAPPER")
 {
     builder.Services.AddTransient<IPokedexService, PokedexDapper>();
-    builder.Services.AddTransient<IPokedexServiceV2, PokedexDapperV2>();
     builder.Services.AddTransient<ISqlDapperDataAccess>(s => new SqlDapperDataAccess(builder.Configuration.GetConnectionString("Pokedex")!)) ;
 }
     var app = builder.Build();

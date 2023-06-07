@@ -1,6 +1,6 @@
 namespace PokedexServices.Model
 {
-    public class PokemonTypeModel
+    public class TypeModel
     {
         public int Id { get; set; }
 

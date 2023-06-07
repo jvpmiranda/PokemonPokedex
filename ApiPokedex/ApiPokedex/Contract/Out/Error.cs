@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace ApiPokedex.Contract.v1;
+namespace ApiPokedex.Contract.Out;
 
 public class Error
 {

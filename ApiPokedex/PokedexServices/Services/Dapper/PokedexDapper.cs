@@ -14,18 +14,12 @@ public class PokedexDapper : IPokedexService
         _sql = sql;
     }
 
-    public IEnumerable<PokemonModel> GetPokemon()
+    public IEnumerable<PokemonModel> GetPokemon(string pokemonKey)
     {
-        //return _sql.ExecuteQuery<PokemonModel, dynamic>("select top 10 * from pokemon", new { }).Result;
-        return _sql.ExecuteQueryStoredProcedure<PokemonModel, dynamic>("sp_pokedex_GetAllPokemon", new { }).Result;
-    }
-    public PokemonModel GetPokemon(int pokemonId)
-    {
-        PokemonModel pokemon;
-        using (var queryResult = _sql.ExecuteQueryStoredProcedureMultiple<dynamic>("sp_pokedex_GetPokemon", new { pokemonId, versionId = 0 }).Result)
+        IEnumerable<PokemonModel> pokemon;
+        using (var queryResult = _sql.ExecuteQueryStoredProcedureMultiple<dynamic>("sp_pokedex_GetPokemon", new { pokemonKey }).Result)
         {
-            pokemon = queryResult.Read<PokemonModel>().ToList().First();
-            pokemon.Types = queryResult.Read<PokemonTypeModel>().ToList();
+            pokemon = queryResult.Read<PokemonModel>().ToList();
         }
 
         return pokemon;
@@ -33,7 +27,6 @@ public class PokedexDapper : IPokedexService
 
     public void Insert(PokemonModel pokemon)
     {
-        //_sql.ExecuteNonQuery("insert into pokemon (identifier) values (@Identifier)", pokemon);
         _sql.ExecuteNonQueryStoredProcedure("sp_pokedex_InsertPokemon", pokemon);
     }
 
