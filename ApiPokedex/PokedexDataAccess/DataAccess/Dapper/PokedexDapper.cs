@@ -1,8 +1,6 @@
 ﻿using DapperConnection.DataAccess;
-using PokedexModels.Model;
 using PokedexDataAccess.Interfaces;
-using PokedexEF.Model;
-using System;
+using PokedexModels.Model;
 
 namespace PokedexDataAccess.DataAccess.Dapper;
 
@@ -17,17 +15,6 @@ public class PokedexDapper : IPokedexDataAccessService
 
     public IEnumerable<PokemonModel> GetPokemon(string pokemonKey)
     {
-        //var pokemon = _sql.ExecuteQueryStoredProcedure<PokemonModel, PokemonModel, PokemonModel, dynamic>(
-        //    "sp_pokedex_GetBasicInfoPokemon",
-        //    (pok, evol) =>
-        //    {
-        //        pok.EvolvesFrom = evol;
-        //        return pok;
-        //    },
-        //    new { pokemonKey }, splitOn: "evolvesFromId"
-        //).Result;
-        //
-        //return pokemon;
         return _sql.ExecuteQueryStoredProcedure<PokemonModel, dynamic>("sp_pokedex_GetBasicInfoPokemon", new { pokemonKey }).Result;
     }
 
