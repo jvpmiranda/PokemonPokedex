@@ -1,11 +1,11 @@
 ﻿using PokedexModels.Model;
-using PokedexServices.Interfaces;
+using PokedexDataAccess.Interfaces;
 using SqlServerADOConnection.SQLConnection;
 using System.Data;
 
-namespace PokedexServices.Services.ADO;
+namespace PokedexDataAccess.DataAccess.ADO;
 
-public class PokedexADOSqlServer : IPokedexService
+public class PokedexADOSqlServer : IPokedexDataAccessService
 {
     protected readonly ISqlServerADOQuery _sql;
 
@@ -55,7 +55,7 @@ public class PokedexADOSqlServer : IPokedexService
         };
     }
 
-    public PokemonModel GetPokemon(int pokemonId, int generationId)
+    public PokemonModel GetPokemon(int pokemonId, int versionId)
     {
         throw new NotImplementedException();
     }

@@ -1,11 +1,6 @@
 namespace ApiPokedex.Contract.Out;
 
-public class OutGetBasicInfoPokemon
-{
-    public IEnumerable<OutBasicInfoPokemon> Pokemons { get; set; }
-}
-
-public class OutBasicInfoPokemon
+public class OutPokemon
 {
     public int Id { get; set; }
 
@@ -18,4 +13,10 @@ public class OutBasicInfoPokemon
     public int? EvolvesFromSpeciesId { get; set; }
 
     public int GenerationId { get; set; }
+
+    public IEnumerable<int> EvolvesTo { get; set;}
+
+    public IEnumerable<OutTypeOfPokemon> Types { get; set; }
+
+    public string Description { get; set; }
 }

@@ -1,12 +1,12 @@
 ﻿using PokedexEF.DataAccess;
 using PokedexEF.Model;
 using PokedexModels.Model;
-using PokedexServices.Interfaces;
+using PokedexDataAccess.Interfaces;
 using System.Data;
 
-namespace PokedexServices.Services.EF;
+namespace PokedexDataAccess.DataAccess.EF;
 
-public class PokedexEntityFramework : IPokedexService
+public class PokedexEntityFramework : IPokedexDataAccessService
 {
     protected readonly DbPokedexContext _db;
 
@@ -76,7 +76,7 @@ public class PokedexEntityFramework : IPokedexService
         return pokemon;
     }
 
-    public PokemonModel GetPokemon(int pokemonId, int generationId)
+    public PokemonModel GetPokemon(int pokemonId, int versionId)
     {
         throw new NotImplementedException();
     }

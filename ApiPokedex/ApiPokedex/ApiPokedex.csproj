@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-ApiPokedex-6A2D6C02-7CDE-4453-8AE8-A58FE3A457F6</UserSecretsId>
@@ -21,7 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PokedexDataAccess\PokedexDataAccess.csproj" />
     <ProjectReference Include="..\PokedexEntityFramework\PokedexEF.csproj" />
+    <ProjectReference Include="..\PokedexModels\PokedexModels.csproj" />
     <ProjectReference Include="..\PokedexServices\PokedexServices.csproj" />
     <ProjectReference Include="..\SqlServerDataBaseConnection\SqlServerADOConnection.csproj" />
   </ItemGroup>

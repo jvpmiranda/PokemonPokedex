@@ -2,47 +2,46 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
-namespace ApiPokedex.Middleware
+namespace ApiPokedex.Middleware;
+
+public class LoggerMiddleware : IMiddleware
 {
-    public class LoggerMiddleware : IMiddleware
+    private readonly ILogger _logger;
+
+    public LoggerMiddleware(ILogger<LoggerMiddleware> logger) => _logger = logger;
+
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        private readonly ILogger _logger;
+        _logger.LogInformation("Request: {Path}", context.Request.Path);
 
-        public LoggerMiddleware(ILogger<LoggerMiddleware> logger) => _logger = logger;
-
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        Stream originalBody = context.Response.Body;
+        try
         {
-            _logger.LogInformation("Request: {Path}", context.Request.Path);
-
-            Stream originalBody = context.Response.Body;
-            try
+            using (var memStream = new MemoryStream())
             {
-                using (var memStream = new MemoryStream())
-                {
-                    context.Response.Body = memStream;
+                context.Response.Body = memStream;
 
-                    await next(context);
+                await next(context);
 
-                    memStream.Position = 0;
-                    string responseBody = new StreamReader(memStream).ReadToEnd();
-                    _logger.LogInformation("Response status code: {statusCode} - Response: {response}", context.Response.StatusCode, responseBody);
+                memStream.Position = 0;
+                string responseBody = new StreamReader(memStream).ReadToEnd();
+                _logger.LogInformation("Response status code: {statusCode} - Response: {response}", context.Response.StatusCode, responseBody);
 
-                    memStream.Position = 0;
-                    await memStream.CopyToAsync(originalBody);
-                }
+                memStream.Position = 0;
+                await memStream.CopyToAsync(originalBody);
             }
-            finally
-            {
-                context.Response.Body = originalBody;
-            }
+        }
+        finally
+        {
+            context.Response.Body = originalBody;
         }
     }
+}
 
-    public static class LoggerMiddlewareExtensions
+public static class LoggerMiddlewareExtensions
+{
+    public static void UseLoggerMiddleware(this WebApplication app)
     {
-        public static void UseLoggerMiddleware(this WebApplication app)
-        {
-            app.UseMiddleware<LoggerMiddleware>();
-        }
+        app.UseMiddleware<LoggerMiddleware>();
     }
 }
