@@ -29,7 +29,7 @@ public class PokedexEntityFramework : IPokedexDataAccessService
 
     public void Insert(PokemonModel pokemon)
     {
-        _db.Pokemons.Add(new PokemonEF() { Identifier = pokemon.Identifier });
+        _db.Pokemons.Add(new PokemonEF() { Identifier = pokemon.Name });
         _db.SaveChanges();
     }
 
@@ -38,7 +38,7 @@ public class PokedexEntityFramework : IPokedexDataAccessService
         var ds = _db.Pokemons.Where(p => p.Id == pokemon.Id).FirstOrDefault();
         if (ds != null)
         {
-            ds.Identifier = pokemon.Identifier;
+            ds.Identifier = pokemon.Name;
             //_db.SaveChanges();
         }
     }
@@ -58,7 +58,7 @@ public class PokedexEntityFramework : IPokedexDataAccessService
         var pokemon = new PokemonModel
         {
             Id = pok.Id,
-            Identifier = pok.Identifier,
+            Name = pok.Identifier,
             Height = pok.Height,
             Weight = pok.Weight
         };
@@ -66,17 +66,24 @@ public class PokedexEntityFramework : IPokedexDataAccessService
         pokemon.Types = new List<TypeModel>();
         foreach (var type in pok.PokemonTypes)
         {
-            pokemon.Types.Add(new TypeModel
+            List<TypeModel> types = new List<TypeModel>();
+            types.Add(new TypeModel
             {
                 Id = type.Type.Id,
                 Name = type.Type.Identifier
             });
+            pokemon.Types = types;
         }
 
         return pokemon;
     }
 
     public PokemonModel GetPokemon(int pokemonId, int versionId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void GetPokemon(int pokemonId, int versionId, PokemonModel result)
     {
         throw new NotImplementedException();
     }

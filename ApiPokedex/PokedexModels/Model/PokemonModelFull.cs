@@ -1,13 +1,23 @@
+using System.Data.Common;
+
 namespace PokedexModels.Model;
 
-public class PokemonModelFull
+public class PokemonModelFull : PokemonModel
 {
-    public PokemonModelFull()
+    public PokemonModelFull(PokemonModel pokemon)
     {
-        EvolvesTo = new List<PokemonModelFull>();
+        GenerationNumber = pokemon.GenerationNumber;
+        Name = pokemon.Name;
+        Description = pokemon.Description;
+        Weight = pokemon.Weight;
+        Height = pokemon.Height;
+        Id = pokemon.Id;
+        EvolvesFrom = pokemon.EvolvesFrom;
+        EvolvesTo = pokemon.EvolvesTo;
+        Types = pokemon.Types;
+        Evolutions = new List<PokemonModelFull>();
     }
 
-    public PokemonModel Pokemon { get; set; }
-    public PokemonModelFull EvolvesFrom { get; set; }
-    public List<PokemonModelFull> EvolvesTo { get; set; }
+    public PokemonModelFull PreEvolution { get; set; }
+    public List<PokemonModelFull> Evolutions { get; set; }
 }

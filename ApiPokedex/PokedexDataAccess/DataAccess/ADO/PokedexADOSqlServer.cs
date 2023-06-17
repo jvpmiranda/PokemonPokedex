@@ -49,13 +49,18 @@ public class PokedexADOSqlServer : IPokedexDataAccessService
         return new PokemonModel
         {
             Id = (int)ds["id"],
-            Identifier = ds["identifier"]?.ToString(),
+            Name = ds["identifier"]?.ToString(),
             Height = (int)ds["Height"],
             Weight = (double)ds["Weight"]
         };
     }
 
     public PokemonModel GetPokemon(int pokemonId, int versionId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void GetPokemon(int pokemonId, int versionId, PokemonModel result)
     {
         throw new NotImplementedException();
     }

@@ -1,6 +1,6 @@
 using PokedexModels.Model;
 
-namespace ApiPokedex.Contract.In;
+namespace ApiPokedex.Contract.v1.In;
 
 public class InPokedexVersion
 {

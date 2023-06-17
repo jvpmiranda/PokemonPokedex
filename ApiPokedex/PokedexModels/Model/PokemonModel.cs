@@ -4,14 +4,12 @@ public class PokemonModel
 {
     public PokemonModel()
     {
-        Types = new List<TypeModel>();
         EvolvesTo = new List<int>();
-        Description = string.Empty;
     }
 
     public int Id { get; set; }
 
-    public string Identifier { get; set; } = null!;
+    public string Name { get; set; }
 
     public int Height { get; set; }
 
@@ -21,9 +19,9 @@ public class PokemonModel
 
     public int? EvolvesFrom { get; set; }
 
-    public List<int> EvolvesTo { get; set; }
+    public IEnumerable<int> EvolvesTo { get; set; }
 
-    public ICollection<TypeModel> Types { get; set; }
+    public IEnumerable<TypeModel> Types { get; set; }
 
     public string Description { get; set; }
 }

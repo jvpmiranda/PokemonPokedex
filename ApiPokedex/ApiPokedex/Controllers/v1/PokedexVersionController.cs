@@ -1,8 +1,9 @@
-using ApiPokedex.Contract.In;
-using ApiPokedex.Contract.Out;
-using ApiPokedex.Mapper;
+using ApiPokedex.Contract.v1.In;
+using ApiPokedex.Contract.v1.Out;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PokedexModels.Model;
 using PokedexServices.Interfaces;
 
 namespace ApiPokedex.Controllers.v1;
@@ -13,37 +14,40 @@ namespace ApiPokedex.Controllers.v1;
 public class PokedexVersionController : ControllerBase
 {
     private IPokedexVersionService _pokedexVersion { get; }
+    private readonly IMapper _mapper;
 
-    public PokedexVersionController(IPokedexVersionService pokedexVersion)
+    public PokedexVersionController(IPokedexVersionService pokedexVersion, IMapper mapper)
     {
         _pokedexVersion = pokedexVersion;
+        _mapper = mapper;
     }
 
     [HttpGet]
     public ActionResult<OutGetPokedexVersion> GetVersion(int? versionId)
     {
-        OutGetPokedexVersion result = new OutGetPokedexVersion();
-        result.Versions = MapperPokedex.ConvertToEnumerableOutVersion(_pokedexVersion.Get(versionId));
+        var pokedex = _pokedexVersion.Get(versionId);
+        OutGetPokedexVersion result = _mapper.Map<OutGetPokedexVersion>(pokedex);
         return Ok(result);
     }
 
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "Authenticated")]
     [HttpPost]
     public ActionResult Post(InPokedexVersion pokedexVersion)
     {
-        _pokedexVersion.Insert(MapperPokedex.ConvertToModel(pokedexVersion));
+        var pokedex = _mapper.Map<PokedexVersionModel>(pokedexVersion);
+        _pokedexVersion.Insert(pokedex);
         return Ok();
     }
 
-    [Authorize(Roles = "user, admin")]
+    [Authorize(Roles = "Authenticated")]
     [HttpPut]
     public ActionResult Put(InPokedexVersion pokedexVersion)
     {
-        _pokedexVersion.Update(MapperPokedex.ConvertToModel(pokedexVersion));
+        _pokedexVersion.Update(_mapper.Map<PokedexVersionModel>(pokedexVersion));
         return Ok();
     }
 
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "Authenticated")]
     [HttpDelete]
     public ActionResult Delete(int pokemonId)
     {

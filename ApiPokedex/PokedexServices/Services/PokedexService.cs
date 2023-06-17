@@ -1,5 +1,4 @@
 ﻿using PokedexDataAccess.Interfaces;
-using PokedexEF.Model;
 using PokedexModels.Model;
 using PokedexServices.Interfaces;
 
@@ -26,36 +25,32 @@ public class PokedexService : IPokedexService
 
     public PokemonModelFull GetPokemonFullInfo(int pokemonId, int versionId)
     {
-        PokemonModelFull pokemonFull = new PokemonModelFull();
-        pokemonFull.Pokemon = _dataAccess.GetPokemon(pokemonId, versionId);
+        PokemonModelFull pokemonFull = new PokemonModelFull(GetPokemon(pokemonId, versionId));
 
-        if (pokemonFull.Pokemon.EvolvesFrom.HasValue)
-            pokemonFull.EvolvesFrom = GetPreEvolutionCicle(pokemonFull.Pokemon.EvolvesFrom.Value, versionId);
+        if (pokemonFull.EvolvesFrom.HasValue)
+            pokemonFull.PreEvolution = GetPreEvolutionCicle(pokemonFull.EvolvesFrom.Value, versionId);
 
-        foreach (var id in pokemonFull.Pokemon.EvolvesTo)
-            pokemonFull.EvolvesTo.Add(GetEvolutionCicle(versionId, id));
+        foreach (var id in pokemonFull.EvolvesTo)
+            pokemonFull.Evolutions.Add(GetEvolutionCicle(id, versionId));
 
         return pokemonFull;
     }
 
     private PokemonModelFull GetPreEvolutionCicle(int pokemonId, int versionId)
     {
-        PokemonModelFull pokemonFull = new PokemonModelFull();
-
-        pokemonFull.Pokemon = _dataAccess.GetPokemon(pokemonId, versionId);
-        if (pokemonFull.Pokemon.EvolvesFrom.HasValue)
-            pokemonFull.EvolvesFrom = GetPreEvolutionCicle(pokemonFull.Pokemon.EvolvesFrom.Value, versionId);
+        PokemonModelFull pokemonFull = new PokemonModelFull(GetPokemon(pokemonId, versionId));
+        if (pokemonFull.EvolvesFrom.HasValue)
+            pokemonFull.PreEvolution = GetPreEvolutionCicle(pokemonFull.EvolvesFrom.Value, versionId);
 
         return pokemonFull;
     }
 
-    private PokemonModelFull GetEvolutionCicle(int versionId, int evolutions)
+    private PokemonModelFull GetEvolutionCicle(int evolution, int versionId)
     {
-        PokemonModelFull pokemonFull = new PokemonModelFull();
-        
-        pokemonFull.Pokemon = _dataAccess.GetPokemon(evolutions, versionId);
-        foreach (var id in pokemonFull.Pokemon.EvolvesTo)
-            pokemonFull.EvolvesTo.Add(GetEvolutionCicle(versionId, id));
+        PokemonModelFull pokemonFull = new PokemonModelFull(GetPokemon(evolution, versionId));
+
+        foreach (var id in pokemonFull.EvolvesTo)
+            pokemonFull.Evolutions.Add(GetEvolutionCicle(id, versionId));
 
         return pokemonFull;
     }

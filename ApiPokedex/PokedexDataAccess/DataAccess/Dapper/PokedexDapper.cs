@@ -1,6 +1,7 @@
 ﻿using DapperConnection.DataAccess;
 using PokedexDataAccess.Interfaces;
 using PokedexModels.Model;
+using System.Collections.Generic;
 
 namespace PokedexDataAccess.DataAccess.Dapper;
 
@@ -24,9 +25,13 @@ public class PokedexDapper : IPokedexDataAccessService
             "sp_pokedex_GetPokemon",
             (pok, type, evol) =>
             {
-                pok.Types.Add(type);
+                List<TypeModel> types = new List<TypeModel>();
+                List<int> evolves = new List<int>();
+                types.Add(type);
                 if (evol.HasValue)
-                    pok.EvolvesTo.Add(evol.Value);
+                    evolves.Add(evol.Value);
+                pok.Types = types;
+                pok.EvolvesTo = evolves;
                 return pok;
             },
             new { pokemonId, versionId }, splitOn: "typeId, evolvesTo"
@@ -39,7 +44,7 @@ public class PokedexDapper : IPokedexDataAccessService
         {
             var pok = g.First();
             pok.Types = g.Select(p => p.Types.Single()).ToList();
-            if (pok.EvolvesTo.Count > 0)
+            if (pok.EvolvesTo.Count() > 0)
                 pok.EvolvesTo = g.Select(p => p.EvolvesTo.Single()).ToList();
             return pok;
         });

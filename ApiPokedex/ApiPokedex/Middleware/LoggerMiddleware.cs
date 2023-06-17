@@ -1,8 +1,4 @@
-﻿using ApiPokedex.Contract;
-using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-
-namespace ApiPokedex.Middleware;
+﻿namespace ApiPokedex.Middleware;
 
 public class LoggerMiddleware : IMiddleware
 {

@@ -29,23 +29,17 @@ public class AuthController : ControllerBase
         var security = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
         var credentials = new SigningCredentials(security, SecurityAlgorithms.HmacSha256);
 
-        string role;
-        if (name == "Joao")
-            role = "admin";
-        else
-            role = "user";
-
         var claims = new[]
         {
             new Claim(ClaimTypes.Name, name),
-            new Claim(ClaimTypes.Role, role)
+            new Claim(ClaimTypes.Role, "Authenticated")
         };
 
         var token = new JwtSecurityToken(
             //_jwtSettings.Issuer,
             //_jwtSettings.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddHours(1),
+            expires: DateTime.UtcNow.AddMinutes(15),
             signingCredentials: credentials);
 
 

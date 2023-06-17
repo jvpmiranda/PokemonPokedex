@@ -1,4 +1,4 @@
-namespace ApiPokedex.Contract.Out;
+namespace ApiPokedex.Contract.v1.Out;
 
 public class OutTypeOfPokemon
 {

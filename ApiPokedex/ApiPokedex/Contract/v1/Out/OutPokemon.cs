@@ -1,4 +1,4 @@
-namespace ApiPokedex.Contract.Out;
+namespace ApiPokedex.Contract.v1.Out;
 
 public class OutPokemon
 {
@@ -10,11 +10,11 @@ public class OutPokemon
 
     public double Weight { get; set; }
 
-    public int? EvolvesFromSpeciesId { get; set; }
+    public int? EvolvesFrom { get; set; }
 
-    public int GenerationId { get; set; }
+    public int GenerationNumber { get; set; }
 
-    public IEnumerable<int> EvolvesTo { get; set;}
+    public IEnumerable<int> EvolvesTo { get; set; }
 
     public IEnumerable<OutTypeOfPokemon> Types { get; set; }
 

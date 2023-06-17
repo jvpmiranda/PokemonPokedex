@@ -1,8 +1,9 @@
-using ApiPokedex.Contract.In;
-using ApiPokedex.Contract.Out;
-using ApiPokedex.Mapper;
+using ApiPokedex.Contract.v1.In;
+using ApiPokedex.Contract.v1.Out;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PokedexModels.Model;
 using PokedexServices.Interfaces;
 
 namespace ApiPokedex.Controllers.v1;
@@ -12,11 +13,13 @@ namespace ApiPokedex.Controllers.v1;
 [ApiVersion("1.0")]
 public class PokemonController : ControllerBase
 {
-    private IPokedexService _pokedex { get; }
+    private readonly IPokedexService _pokedex;
+    private readonly IMapper _mapper;
 
-    public PokemonController(IPokedexService pokedex)
+    public PokemonController(IPokedexService pokedex, IMapper mapper)
     {
         _pokedex = pokedex;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -27,8 +30,8 @@ public class PokemonController : ControllerBase
     [HttpGet]
     public ActionResult<OutGetBasicInfoPokemon> GetBasicInfo(string? pokemonKey)
     {
-        OutGetBasicInfoPokemon result = new OutGetBasicInfoPokemon();
-        result.Pokemons = MapperPokedex.ConvertToEnumerableOutBasicInfoPokemon(_pokedex.GetPokemon(pokemonKey));
+        var pokemon = _pokedex.GetPokemon(pokemonKey);
+        var result = _mapper.Map<IEnumerable<OutBasicInfoPokemon>>(pokemon);
         return Ok(result);
     }
 
@@ -36,7 +39,7 @@ public class PokemonController : ControllerBase
     public ActionResult<OutPokemon> GetInfo(int pokemonId, int versionId)
     {
         var pok = _pokedex.GetPokemon(pokemonId, versionId);
-        OutPokemon result = MapperPokedex.ConvertToOutPokemon(pok);
+        var result = _mapper.Map<OutPokemon>(pok);
         return Ok(result);
     }
 
@@ -44,27 +47,27 @@ public class PokemonController : ControllerBase
     public ActionResult<OutFullPokemon> GetFullInfo(int pokemonId, int versionId)
     {
         var pok = _pokedex.GetPokemonFullInfo(pokemonId, versionId);
-        OutFullPokemon result = MapperPokedex.ConvertToOutFullPokemon(pok);
-        return Ok(result);
+        OutFullPokemon results = _mapper.Map<OutFullPokemon>(pok);
+        return Ok(results);
     }
 
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "Authenticated")]
     [HttpPost]
     public ActionResult Post(InPokemon pokemon)
     {
-        _pokedex.Insert(MapperPokedex.ConvertToModel(pokemon));
+         _pokedex.Insert(_mapper.Map<PokemonModel>(pokemon));
         return Ok();
     }
 
-    [Authorize(Roles = "user, admin")]
+    [Authorize(Roles = "Authenticated")]
     [HttpPut]
     public ActionResult Put(InPokemon pokemon)
     {
-        _pokedex.Update(MapperPokedex.ConvertToModel(pokemon));
+        _pokedex.Update(_mapper.Map<PokemonModel>(pokemon));
         return Ok();
     }
 
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "Authenticated")]
     [HttpDelete]
     [MapToApiVersion("1.0")]
     public ActionResult Delete(int pokemonId)

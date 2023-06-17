@@ -1,9 +1,6 @@
-namespace ApiPokedex.Contract.Out;
+namespace ApiPokedex.Contract.v1.Out;
 
-public class OutGetPokedexVersion
-{
-    public IEnumerable<OutPokedexVersion> Versions { get; set; }
-}
+public class OutGetPokedexVersion : List<OutPokedexVersion> { }
 
 public class OutPokedexVersion
 {

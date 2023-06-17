@@ -1,4 +1,4 @@
-namespace ApiPokedex.Contract.Out;
+namespace ApiPokedex.Contract.v1.Out;
 
 public class OutBasicPokemon
 {
@@ -21,23 +21,23 @@ public class OutFullPokemon : OutBasicPokemon
 {
     public OutFullPokemon()
     {
-        EvolvesTo = new List<OutEvolutionPokemon>();
+        Evolutions = new List<OutEvolutionPokemon>();
     }
 
-    public List<OutEvolutionPokemon> EvolvesTo { get; set; }
+    public List<OutEvolutionPokemon> Evolutions { get; set; }
 
-    public OutPreEvolutionPokemon EvolvesFrom { get; set; }
+    public OutPreEvolutionPokemon PreEvolution { get; set; }
 }
 
 
 public class OutEvolutionPokemon : OutBasicPokemon
 {
-    public List<OutEvolutionPokemon> EvolvesTo { get; set; }
+    public List<OutEvolutionPokemon> Evolutions { get; set; }
 }
 
 
 public class OutPreEvolutionPokemon : OutBasicPokemon
 {
-    public OutPreEvolutionPokemon EvolvesFrom { get; set; }
+    public OutPreEvolutionPokemon PreEvolution { get; set; }
 }
 

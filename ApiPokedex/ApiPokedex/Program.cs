@@ -15,9 +15,12 @@ using PokedexEF.DataAccess;
 using PokedexServices.Interfaces;
 using PokedexServices.Services;
 using SqlServerADOConnection.SQLConnection;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 // Add services to the container.
 var jwtSettings = new JwtSettings();
@@ -62,7 +65,7 @@ builder.Services.AddSwaggerGen(
                     };
                     x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                     {
-                        Description = "TOKEN da API DA POKEDEX",
+                        Description = "Token",
                         Type = SecuritySchemeType.ApiKey,
                         In = ParameterLocation.Header,
                         Name = "Authorization",
@@ -94,7 +97,7 @@ builder.Logging.AddDebug();
 var typeOfConnection = builder.Configuration.GetConnectionString("TypeOfDataBaseConnection")!;
 if (typeOfConnection == "ADO")
 {
-    builder.Services.AddTransient<ISqlServerADOQuery>(s => new SqlServerADOQuery(builder.Configuration.GetConnectionString("Pokedex")!));
+    builder.Services.AddTransient<ISqlServerADOQuery>(s => new SqlServerADOQuery(builder.Configuration.GetConnectionString("Pokedex")));
     builder.Services.AddTransient<IPokedexDataAccessService, PokedexADOSqlServer>();
 }
 else if (typeOfConnection == "EF")
@@ -110,7 +113,7 @@ else if (typeOfConnection == "DAPPER")
 {
     builder.Services.AddTransient<IPokedexDataAccessService, PokedexDapper>();
     builder.Services.AddTransient<IPokedexVersionDataAccessService, PokedexVersionDapper>();
-    builder.Services.AddTransient<ISqlDapperDataAccess>(s => new SqlDapperDataAccess(builder.Configuration.GetConnectionString("Pokedex")!)) ;
+    builder.Services.AddTransient<ISqlDapperDataAccess>(s => new SqlDapperDataAccess(builder.Configuration.GetConnectionString("Pokedex"))) ;
 }
     var app = builder.Build();
 
