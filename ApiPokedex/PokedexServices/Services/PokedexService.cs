@@ -13,19 +13,19 @@ public class PokedexService : IPokedexService
         _dataAccess = dataAccess;
     }
 
-    public IEnumerable<PokemonModel> GetPokemon(string pokemonKey)
+    public async Task<IEnumerable<PokemonModel>> GetBasicPokemon(int? pokemonId)
     {
-        return _dataAccess.GetPokemon(pokemonKey);
+        return await _dataAccess.GetBasicPokemon(pokemonId);
     }
 
-    public PokemonModel GetPokemon(int pokemonId, int versionId)
+    public async Task<PokemonModel> GetPokemon(int pokemonId)
     {
-        return _dataAccess.GetPokemon(pokemonId, versionId);
+        return await _dataAccess.GetPokemon(pokemonId);
     }
 
-    public PokemonModelFull GetPokemonFullInfo(int pokemonId, int versionId)
+    public async Task<PokemonLineModel> GetPokemonFullInfo(int pokemonId, int versionId)
     {
-        PokemonModelFull pokemonFull = new PokemonModelFull(GetPokemon(pokemonId, versionId));
+        PokemonLineModel pokemonFull = await _dataAccess.GetPokemonLine(pokemonId, versionId);
 
         if (pokemonFull.EvolvesFrom.HasValue)
             pokemonFull.PreEvolution = GetPreEvolutionCicle(pokemonFull.EvolvesFrom.Value, versionId);
@@ -36,37 +36,37 @@ public class PokedexService : IPokedexService
         return pokemonFull;
     }
 
-    private PokemonModelFull GetPreEvolutionCicle(int pokemonId, int versionId)
+    public async Task Insert(PokemonModel pokemon)
     {
-        PokemonModelFull pokemonFull = new PokemonModelFull(GetPokemon(pokemonId, versionId));
+        await _dataAccess.Insert(pokemon);
+    }
+
+    public async Task Update(PokemonModel pokemon)
+    {
+        await _dataAccess.Update(pokemon);
+    }
+
+    public async Task Delete(int pokemonId)
+    {
+        await _dataAccess.Delete(pokemonId);
+    }
+
+    private PokemonLineModel GetPreEvolutionCicle(int pokemonId, int versionId)
+    {
+        PokemonLineModel pokemonFull = _dataAccess.GetPokemonLine(pokemonId, versionId).Result;
         if (pokemonFull.EvolvesFrom.HasValue)
             pokemonFull.PreEvolution = GetPreEvolutionCicle(pokemonFull.EvolvesFrom.Value, versionId);
 
         return pokemonFull;
     }
 
-    private PokemonModelFull GetEvolutionCicle(int evolution, int versionId)
+    private PokemonLineModel GetEvolutionCicle(int pokemonId, int versionId)
     {
-        PokemonModelFull pokemonFull = new PokemonModelFull(GetPokemon(evolution, versionId));
+        PokemonLineModel pokemonFull = _dataAccess.GetPokemonLine(pokemonId, versionId).Result;
 
         foreach (var id in pokemonFull.EvolvesTo)
             pokemonFull.Evolutions.Add(GetEvolutionCicle(id, versionId));
 
         return pokemonFull;
-    }
-
-    public void Insert(PokemonModel pokemon)
-    {
-        _dataAccess.Insert(pokemon);
-    }
-
-    public void Update(PokemonModel pokemon)
-    {
-        _dataAccess.Update(pokemon);
-    }
-
-    public void Delete(int pokemonId)
-    {
-        _dataAccess.Delete(pokemonId);
     }
 }

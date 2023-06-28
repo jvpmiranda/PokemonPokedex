@@ -5,7 +5,8 @@ using System.Data;
 
 namespace PokedexDataAccess.DataAccess.ADO;
 
-public class PokedexADOSqlServer : IPokedexDataAccessService
+[Obsolete]
+public class PokedexADOSqlServer// : IPokedexDataAccessService
 {
     protected readonly ISqlServerADOQuery _sql;
 

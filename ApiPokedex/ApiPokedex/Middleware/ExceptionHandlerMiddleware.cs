@@ -1,4 +1,5 @@
-﻿using ApiPokedex.Contract.v1.Out;
+﻿using ApiPokedex.Contract;
+using System.Text.Json;
 
 namespace ApiPokedex.Middleware;
 
@@ -16,13 +17,13 @@ public class ExceptionHandlerMiddleware : IMiddleware
         }
         catch (Exception ex)
         {
-            var err = new Error();
-            err.Status = 500;
-            err.Message = $"Erro : { ex.Message}";
+            var err = new ErrorStatus() { Status = new Status() };
+            err.Status.HttpStatusCode = 500;
+            err.Status.Message = $"Erro : { ex.Message}";
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = err.Status;
+            context.Response.StatusCode = err.Status.HttpStatusCode;
             GravarErro(ex);
-            await context.Response.WriteAsync(err.ToString());
+            await context.Response.WriteAsync(JsonSerializer.Serialize(err));
         }
     }
 

@@ -17,7 +17,7 @@ public class PokedexVersionService : IPokedexVersionService
     public IEnumerable<PokedexVersionModel> Get(int? versionId)
     {
         int value = versionId.HasValue ? versionId.Value : 0;
-        return _dataAccess.Get(value);
+        return _dataAccess.Get(value).Result;
     }
 
     public void Delete(int versionId)

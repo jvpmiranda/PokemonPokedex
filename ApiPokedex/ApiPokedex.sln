@@ -11,11 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokedexServices", "PokedexS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokedexEF", "PokedexEntityFramework\PokedexEF.csproj", "{5755FF1F-6BA2-49F3-AF25-0A72575996E2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DapperConnection", "DapperConnection\DapperConnection.csproj", "{17569EB5-6C51-412E-93C9-9E15014D918C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokedexModels", "PokedexModels\PokedexModels.csproj", "{02AFA373-70D9-4351-B27B-0F75306165EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokedexModels", "PokedexModels\PokedexModels.csproj", "{02AFA373-70D9-4351-B27B-0F75306165EF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokedexDataAccess", "PokedexDataAccess\PokedexDataAccess.csproj", "{1677F174-5555-4C4D-B3C2-1D08B46607C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokedexDataAccess", "PokedexDataAccess\PokedexDataAccess.csproj", "{1677F174-5555-4C4D-B3C2-1D08B46607C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,10 +37,6 @@ Global
 		{5755FF1F-6BA2-49F3-AF25-0A72575996E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5755FF1F-6BA2-49F3-AF25-0A72575996E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5755FF1F-6BA2-49F3-AF25-0A72575996E2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{17569EB5-6C51-412E-93C9-9E15014D918C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{17569EB5-6C51-412E-93C9-9E15014D918C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{17569EB5-6C51-412E-93C9-9E15014D918C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{17569EB5-6C51-412E-93C9-9E15014D918C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{02AFA373-70D9-4351-B27B-0F75306165EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{02AFA373-70D9-4351-B27B-0F75306165EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02AFA373-70D9-4351-B27B-0F75306165EF}.Release|Any CPU.ActiveCfg = Release|Any CPU

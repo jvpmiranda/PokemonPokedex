@@ -1,3 +1,4 @@
+using ApiPokedex.Contract;
 using ApiPokedex.Options;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,28 +22,54 @@ public class AuthController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpPost("token")]
-    [MapToApiVersion("1.0")]
-    public ActionResult Token(string name)
+    [HttpPost("Token")]
+    public ActionResult<Authentication> Token([FromBody]string token)
     {
+        var handler = new JwtSecurityTokenHandler();
+        var validations = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.Secret)),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = false
+            };
 
+        var claims = handler.ValidateToken(token, validations, out var tokenSecure);
+        if (claims.HasClaim("clientId", ApiInformation.ClientId.ToString()) &&
+            claims.HasClaim(c => c.Type == "name"))
+        {
+            return Ok(CreateToken(claims.FindFirstValue("name")));
+        }
+        else
+            return ValidationProblem("token informed is not valid");
+    }
+
+    private Authentication CreateToken(string name)
+    {
         var security = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
         var credentials = new SigningCredentials(security, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
         {
-            new Claim(ClaimTypes.Name, name),
-            new Claim(ClaimTypes.Role, "Authenticated")
-        };
+                new Claim(ClaimTypes.Name, name),
+                new Claim(ClaimTypes.Role, "Authenticated")
+            };
+
+        var expires = DateTime.UtcNow.AddMinutes(15);
 
         var token = new JwtSecurityToken(
             //_jwtSettings.Issuer,
             //_jwtSettings.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(15),
+            expires: expires,
             signingCredentials: credentials);
 
 
-        return Ok(new { Token = new JwtSecurityTokenHandler().WriteToken(token) });
+        return new Authentication() 
+        { 
+            Token = new JwtSecurityTokenHandler().WriteToken(token), 
+            ExpirationDate = expires 
+        };
     }
 }

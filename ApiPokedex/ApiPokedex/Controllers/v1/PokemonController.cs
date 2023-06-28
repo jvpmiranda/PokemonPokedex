@@ -25,28 +25,33 @@ public class PokemonController : ControllerBase
     /// <summary>
     /// Get basic info about the pokemon from the database
     /// </summary>
-    /// <param name="pokemonKey">Key to be used to search the pokemon. Can be the pokemon ID or part of name</param>
+    /// <param name="pokemonId">Id to be used to search the pokemon If null returns all Pokemon</param>
     /// <returns>List of N pokemon that match the key used for searching</returns>
-    [HttpGet]
-    public ActionResult<OutGetBasicInfoPokemon> GetBasicInfo(string? pokemonKey)
+    [Authorize(Roles = "Authenticated")]
+    [HttpGet("{pokemonId?}")]
+    public ActionResult<OutGetBasicInfoPokemon> GetBasicInfo(int? pokemonId = null)
     {
-        var pokemon = _pokedex.GetPokemon(pokemonKey);
+        if (pokemonId.HasValue && pokemonId.Value == 10)
+        throw new Exception("teste");
+        var pokemon = _pokedex.GetBasicPokemon(pokemonId).Result;
         var result = _mapper.Map<IEnumerable<OutBasicInfoPokemon>>(pokemon);
         return Ok(result);
     }
 
-    [HttpGet]
-    public ActionResult<OutPokemon> GetInfo(int pokemonId, int versionId)
+    [Authorize(Roles = "Authenticated")]
+    [HttpGet("{pokemonId}")]
+    public ActionResult<OutPokemon> GetInfo(int pokemonId)
     {
-        var pok = _pokedex.GetPokemon(pokemonId, versionId);
+        var pok = _pokedex.GetPokemon(pokemonId).Result;
         var result = _mapper.Map<OutPokemon>(pok);
         return Ok(result);
     }
 
-    [HttpGet]
+    [Authorize(Roles = "Authenticated")]
+    [HttpGet("{pokemonId}/{versionId}")]
     public ActionResult<OutFullPokemon> GetFullInfo(int pokemonId, int versionId)
     {
-        var pok = _pokedex.GetPokemonFullInfo(pokemonId, versionId);
+        var pok = _pokedex.GetPokemonFullInfo(pokemonId, versionId).Result;
         OutFullPokemon results = _mapper.Map<OutFullPokemon>(pok);
         return Ok(results);
     }
@@ -68,8 +73,7 @@ public class PokemonController : ControllerBase
     }
 
     [Authorize(Roles = "Authenticated")]
-    [HttpDelete]
-    [MapToApiVersion("1.0")]
+    [HttpDelete("{pokemonId}")]
     public ActionResult Delete(int pokemonId)
     {
         _pokedex.Delete(pokemonId);

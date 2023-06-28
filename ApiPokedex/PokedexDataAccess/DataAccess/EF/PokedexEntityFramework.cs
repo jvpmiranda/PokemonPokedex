@@ -6,7 +6,8 @@ using System.Data;
 
 namespace PokedexDataAccess.DataAccess.EF;
 
-public class PokedexEntityFramework : IPokedexDataAccessService
+[Obsolete]
+public class PokedexEntityFramework// : IPokedexDataAccessService
 {
     protected readonly DbPokedexContext _db;
 

@@ -10,5 +10,6 @@ public interface ISqlDapperDataAccess
     Task<IEnumerable<T>> ExecuteQueryStoredProcedure<T, U>(string command, U parameters);
     Task<IEnumerable<V>> ExecuteQueryStoredProcedure<T, U, V, W>(string command, Func<T, U, V> map, W parameters, string splitOn = "");
     Task<IEnumerable<W>> ExecuteQueryStoredProcedure<T, U, V, W, X>(string command, Func<T, U, V, W> map, X parameters, string splitOn = "");
-   Task<SqlMapper.GridReader> ExecuteQueryStoredProcedureMultiple<T>(string command, T parameters);
+    Task<IEnumerable<X>> ExecuteQueryStoredProcedure<T, U, V, W, X, Y>(string command, Func<T, U, V, W, X> map, Y parameters, string splitOn = "");
+    Task<SqlMapper.GridReader> ExecuteQueryStoredProcedureMultiple<T>(string command, T parameters);
 }

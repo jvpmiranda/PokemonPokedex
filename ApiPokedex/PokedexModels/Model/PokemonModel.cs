@@ -2,10 +2,7 @@ namespace PokedexModels.Model;
 
 public class PokemonModel
 {
-    public PokemonModel()
-    {
-        EvolvesTo = new List<int>();
-    }
+    public PokemonModel() => EvolvesTo = new List<int>();
 
     public int Id { get; set; }
 
@@ -23,5 +20,7 @@ public class PokemonModel
 
     public IEnumerable<TypeModel> Types { get; set; }
 
-    public string Description { get; set; }
+    public IEnumerable<PokemonVersionModel> Version { get; set; }
+
+    public string ImageName { get; set; }
 }

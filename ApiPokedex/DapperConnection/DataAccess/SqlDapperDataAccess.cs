@@ -36,6 +36,12 @@ public class SqlDapperDataAccess : ISqlDapperDataAccess
         return await conn.QueryAsync(command, map, parameters, commandType: CommandType.StoredProcedure, splitOn: splitOn);
     }
 
+    public async Task<IEnumerable<X>> ExecuteQueryStoredProcedure<T, U, V, W, X, Y>(string command, Func<T, U, V, W, X> map, Y parameters, string splitOn = "")
+    {
+        using IDbConnection conn = new SqlConnection(_connectionString);
+        return await conn.QueryAsync(command, map, parameters, commandType: CommandType.StoredProcedure, splitOn: splitOn);
+    }
+
     public async Task<SqlMapper.GridReader> ExecuteQueryStoredProcedureMultiple<T>(string command, T parameters)
     {
         IDbConnection conn = new SqlConnection(_connectionString);

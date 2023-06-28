@@ -1,20 +1,15 @@
 using ApiPokedex.Middleware;
 using ApiPokedex.Options;
-using DapperConnection.DataAccess;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using PokedexDataAccess.DataAccess.ADO;
 using PokedexDataAccess.DataAccess.Dapper;
-using PokedexDataAccess.DataAccess.EF;
 using PokedexDataAccess.Interfaces;
-using PokedexEF.DataAccess;
 using PokedexServices.Interfaces;
 using PokedexServices.Services;
-using SqlServerADOConnection.SQLConnection;
 using System.Reflection;
 using System.Text;
 
@@ -27,25 +22,26 @@ var jwtSettings = new JwtSettings();
 builder.Configuration.Bind(nameof(jwtSettings), jwtSettings);
 builder.Services.AddSingleton(jwtSettings);
 
-builder.Services.AddAuthentication(x =>
-                {
-                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(x =>
-                {
-                    //x.RequireHttpsMetadata = false;
-                    x.SaveToken = true;
-                    x.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        RequireExpirationTime = true,
-                        ValidateLifetime = true
-                    };
-                });
+builder.Services.AddJwtAuthentication(jwtSettings.Secret);
+//builder.Services.AddAuthentication(x =>
+//                {
+//                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//                })
+//                .AddJwtBearer(x =>
+//                {
+//                    //x.RequireHttpsMetadata = false;
+//                    x.SaveToken = true;
+//                    x.TokenValidationParameters = new TokenValidationParameters
+//                    {
+//                        ValidateIssuerSigningKey = true,
+//                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
+//                        ValidateIssuer = false,
+//                        ValidateAudience = false,
+//                        RequireExpirationTime = true,
+//                        ValidateLifetime = true
+//                    };
+//                });
 
 
 builder.Services.AddControllers();
@@ -88,6 +84,7 @@ builder.Services.AddScoped<LoggerMiddleware>();
 
 builder.Services.AddTransient<IPokedexService, PokedexService>();
 builder.Services.AddTransient<IPokedexVersionService, PokedexVersionService>();
+builder.Services.AddTransient<IImageService, ImageService>();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
@@ -97,23 +94,24 @@ builder.Logging.AddDebug();
 var typeOfConnection = builder.Configuration.GetConnectionString("TypeOfDataBaseConnection")!;
 if (typeOfConnection == "ADO")
 {
-    builder.Services.AddTransient<ISqlServerADOQuery>(s => new SqlServerADOQuery(builder.Configuration.GetConnectionString("Pokedex")));
-    builder.Services.AddTransient<IPokedexDataAccessService, PokedexADOSqlServer>();
+    //builder.Services.AddTransient<ISqlServerADOQuery>(s => new SqlServerADOQuery(builder.Configuration.GetConnectionString("Pokedex")));
+    //builder.Services.AddTransient<IPokedexDataAccessService, PokedexADOSqlServer>();
 }
 else if (typeOfConnection == "EF")
 {
-    builder.Services.AddTransient<IPokedexDataAccessService, PokedexEntityFramework>();
+    //builder.Services.AddTransient<IPokedexDataAccessService, PokedexEntityFramework>();
 
-    builder.Services.AddDbContext<DbPokedexContext>(options =>
-    {
-        options.UseSqlServer(builder.Configuration.GetConnectionString("Pokedex")!);
-    });
+    //builder.Services.AddDbContext<DbPokedexContext>(options =>
+    //{
+    //    options.UseSqlServer(builder.Configuration.GetConnectionString("Pokedex")!);
+    //});
 }
 else if (typeOfConnection == "DAPPER")
 {
-    builder.Services.AddTransient<IPokedexDataAccessService, PokedexDapper>();
-    builder.Services.AddTransient<IPokedexVersionDataAccessService, PokedexVersionDapper>();
-    builder.Services.AddTransient<ISqlDapperDataAccess>(s => new SqlDapperDataAccess(builder.Configuration.GetConnectionString("Pokedex"))) ;
+    string connectionString = builder.Configuration.GetConnectionString("PokedexSQLServer")!;
+    builder.Services.AddTransient<IImageDataAccessService, ImageDapper>(i => new ImageDapper(connectionString));
+    builder.Services.AddTransient<IPokedexDataAccessService, PokedexDapper>(s => new PokedexDapper(connectionString));
+    builder.Services.AddTransient<IPokedexVersionDataAccessService, PokedexVersionDapper>(v => new PokedexVersionDapper(connectionString));
 }
     var app = builder.Build();
 
@@ -131,7 +129,7 @@ if (app.Environment.IsDevelopment())
         foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
         {
             options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
-                description.GroupName.ToUpperInvariant());
+                description.GroupName.ToUpperInvariant( ));
         }
     });
 }

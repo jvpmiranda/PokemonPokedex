@@ -2,11 +2,13 @@ namespace ApiPokedex.Contract.v1.Out;
 
 public class OutGetPokedexVersion : List<OutPokedexVersion> { }
 
-public class OutPokedexVersion
+public class OutPokedexVersion : ErrorStatus
 {
     public int Id { get; set; }
 
     public string Name { get; set; }
+
+    public int GroupId { get; set; }
 
     public string VersionName { get; set; }
 

@@ -10,14 +10,17 @@ namespace ApiPokedex.Mapper
         {
             CreateMap<PokemonModel, OutPokemon>();
             CreateMap<PokemonModel, OutBasicInfoPokemon>();
-            
-            CreateMap<PokemonModelFull, OutFullPokemon>();
-            CreateMap<PokemonModelFull, OutEvolutionPokemon>();
-            CreateMap<PokemonModelFull, OutPreEvolutionPokemon>();
+
+            CreateMap<PokemonLineModel, OutFullPokemon>();
+            CreateMap<PokemonLineModel, OutEvolutionPokemon>();
+            CreateMap<PokemonLineModel, OutPreEvolutionPokemon>();
 
             CreateMap<TypeModel, OutTypeOfPokemon>();
+            CreateMap<PokemonVersionModel, OutGameVersion>();
 
-            CreateMap<PokedexVersionModel, OutGetPokedexVersion>();
+            CreateMap<PokedexVersionModel, OutPokedexVersion>();
+            
+            CreateMap<ImageModel, OutImage>();
         }
     }
 }

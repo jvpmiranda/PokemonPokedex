@@ -1,6 +1,6 @@
 namespace ApiPokedex.Contract.v1.Out;
 
-public class OutPokemon
+public class OutPokemon : ErrorStatus
 {
     public int Id { get; set; }
 
@@ -18,5 +18,7 @@ public class OutPokemon
 
     public IEnumerable<OutTypeOfPokemon> Types { get; set; }
 
-    public string Description { get; set; }
+    public IEnumerable<OutGameVersion> Version { get; set; }
+
+    public string ImageName { get; set; }
 }

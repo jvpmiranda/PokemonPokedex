@@ -1,42 +1,41 @@
-﻿using DapperConnection.DataAccess;
+﻿using Dapper;
 using PokedexDataAccess.Interfaces;
 using PokedexModels.Model;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace PokedexDataAccess.DataAccess.Dapper;
 
 public class PokedexVersionDapper : IPokedexVersionDataAccessService
 {
-    protected readonly ISqlDapperDataAccess _sql;
+    private readonly string _connectionString;
 
-    public PokedexVersionDapper(ISqlDapperDataAccess sql)
+    public PokedexVersionDapper(string connectionString)
     {
-        _sql = sql;
+        _connectionString = connectionString;
     }
 
-    public IEnumerable<PokedexVersionModel> Get(int versionId)
+    public async Task<IEnumerable<PokedexVersionModel>> Get(int versionId)
     {
-        return _sql.ExecuteQueryStoredProcedure<PokedexVersionModel, PokedexVersionGroupModel, PokedexVersionModel, dynamic>("sp_pokedex_GetPokedexVersions", 
-            (version, group) =>
-            {
-                version.VersionGroup = group;
-                return version;
-            },
-            new { versionId },
-            splitOn: "Id").Result;
+        using IDbConnection conn = new SqlConnection(_connectionString);
+        return await conn.QueryAsync<PokedexVersionModel>("sp_pokedex_GetPokedexVersions", new { versionId }, commandType: CommandType.StoredProcedure);
     }
 
-    public void Insert(PokedexVersionModel version)
+    public async Task Insert(PokedexVersionModel version)
     {
-        _sql.ExecuteNonQueryStoredProcedure("sp_pokedex_InsertPokedexVersion", version);
+        using IDbConnection conn = new SqlConnection(_connectionString);
+        await conn.ExecuteAsync("sp_pokedex_InsertPokedexVersion", version, commandType: CommandType.StoredProcedure);
     }
 
-    public void Update(PokedexVersionModel version)
+    public async Task Update(PokedexVersionModel version)
     {
-        _sql.ExecuteNonQueryStoredProcedure("sp_pokedex_UpdatePokedexVersion", version);
+        using IDbConnection conn = new SqlConnection(_connectionString);
+        await conn.ExecuteAsync("sp_pokedex_InsertPokedexVersion", version, commandType: CommandType.StoredProcedure);
     }
 
-    public void Delete(int versionId)
+    public async Task Delete(int versionId)
     {
-        _sql.ExecuteNonQueryStoredProcedure("sp_pokedex_DeletePokedexVersion", new { versionId });
+        using IDbConnection conn = new SqlConnection(_connectionString);
+        await conn.ExecuteAsync("sp_pokedex_DeletePokedexVersion", versionId, commandType: CommandType.StoredProcedure);
     }
 }

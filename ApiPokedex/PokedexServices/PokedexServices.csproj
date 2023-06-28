@@ -7,19 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Services\ADO\**" />
-    <Compile Remove="Services\Dapper\**" />
-    <Compile Remove="Services\EF\**" />
-    <EmbeddedResource Remove="Services\ADO\**" />
-    <EmbeddedResource Remove="Services\Dapper\**" />
-    <EmbeddedResource Remove="Services\EF\**" />
-    <None Remove="Services\ADO\**" />
-    <None Remove="Services\Dapper\**" />
-    <None Remove="Services\EF\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\DapperConnection\DapperConnection.csproj" />
     <ProjectReference Include="..\PokedexDataAccess\PokedexDataAccess.csproj" />
     <ProjectReference Include="..\PokedexEntityFramework\PokedexEF.csproj" />
     <ProjectReference Include="..\PokedexModels\PokedexModels.csproj" />

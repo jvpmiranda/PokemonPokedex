@@ -22,8 +22,9 @@ public class PokedexVersionController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet]
-    public ActionResult<OutGetPokedexVersion> GetVersion(int? versionId)
+    [Authorize(Roles = "Authenticated")]
+    [HttpGet("{versionId?}")]
+    public ActionResult<OutGetPokedexVersion> GetVersion(int? versionId = null)
     {
         var pokedex = _pokedexVersion.Get(versionId);
         OutGetPokedexVersion result = _mapper.Map<OutGetPokedexVersion>(pokedex);
@@ -48,10 +49,10 @@ public class PokedexVersionController : ControllerBase
     }
 
     [Authorize(Roles = "Authenticated")]
-    [HttpDelete]
-    public ActionResult Delete(int pokemonId)
+    [HttpDelete("{versionId}")]
+    public ActionResult Delete(int versionId)
     {
-        _pokedexVersion.Delete(pokemonId);
+        _pokedexVersion.Delete(versionId);
         return Ok();
     }
 }

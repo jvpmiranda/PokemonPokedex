@@ -7,7 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DapperConnection\DapperConnection.csproj" />
+    <PackageReference Include="Dapper" Version="2.0.143" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PokedexEntityFramework\PokedexEF.csproj" />
     <ProjectReference Include="..\PokedexModels\PokedexModels.csproj" />
     <ProjectReference Include="..\SqlServerDataBaseConnection\SqlServerADOConnection.csproj" />

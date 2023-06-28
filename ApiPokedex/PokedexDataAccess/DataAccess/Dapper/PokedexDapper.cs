@@ -1,71 +1,107 @@
-﻿using DapperConnection.DataAccess;
+﻿using Dapper;
 using PokedexDataAccess.Interfaces;
 using PokedexModels.Model;
-using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace PokedexDataAccess.DataAccess.Dapper;
 
 public class PokedexDapper : IPokedexDataAccessService
 {
-    protected readonly ISqlDapperDataAccess _sql;
+    private readonly string _connectionString;
 
-    public PokedexDapper(ISqlDapperDataAccess sql)
+    public PokedexDapper(string connectionString)
     {
-        _sql = sql;
+        _connectionString = connectionString;
     }
 
-    public IEnumerable<PokemonModel> GetPokemon(string pokemonKey)
+    public async Task<IEnumerable<PokemonModel>> GetBasicPokemon(int? pokemonId)
     {
-        return _sql.ExecuteQueryStoredProcedure<PokemonModel, dynamic>("sp_pokedex_GetBasicInfoPokemon", new { pokemonKey }).Result;
+        using IDbConnection conn = new SqlConnection(_connectionString);
+        return await conn.QueryAsync<PokemonModel>("sp_pokedex_GetBasicInfoPokemon", new { pokemonId }, commandType: CommandType.StoredProcedure);
     }
 
-    public PokemonModel GetPokemon(int pokemonId, int versionId)
+    public async Task<PokemonModel> GetPokemon(int pokemonId)
     {
-        var pokemon = _sql.ExecuteQueryStoredProcedure<PokemonModel, TypeModel, int?, PokemonModel, dynamic>(
+        using IDbConnection conn = new SqlConnection(_connectionString);
+        var pokemon = await conn.QueryAsync<PokemonModel, PokemonVersionModel, TypeModel, int?, PokemonModel>(
             "sp_pokedex_GetPokemon",
-            (pok, type, evol) =>
+            (pok, version, type, evol) =>
             {
-                List<TypeModel> types = new List<TypeModel>();
-                List<int> evolves = new List<int>();
-                types.Add(type);
                 if (evol.HasValue)
-                    evolves.Add(evol.Value);
-                pok.Types = types;
-                pok.EvolvesTo = evolves;
+                    pok.EvolvesTo = new List<int>() { evol.Value };
+
+                pok.Types = new List<TypeModel>() { type };
+                pok.Version = new List<PokemonVersionModel>() { version };
                 return pok;
             },
-            new { pokemonId, versionId }, splitOn: "typeId, evolvesTo"
-        ).Result;
+            new { pokemonId }, splitOn: "versionId, typeId, evolvesTo", commandType: CommandType.StoredProcedure
+        );
 
         if (pokemon.Count() == 0)
             return new PokemonModel();
 
+        var result = PrepareModel(pokemon);
+        return result;
+    }
+
+    public async Task<PokemonLineModel> GetPokemonLine(int pokemonId, int versionId)
+    {
+        using IDbConnection conn = new SqlConnection(_connectionString);
+        var pokemon = await conn.QueryAsync<PokemonLineModel, PokemonVersionModel, TypeModel, int?, PokemonLineModel>(
+            "sp_pokedex_GetPokemonLine",
+            (pok, version, type, evol) =>
+            {
+                if (evol.HasValue)
+                    pok.EvolvesTo = new List<int>() { evol.Value };
+
+                pok.Types = new List<TypeModel>() { type };
+                pok.Version = new List<PokemonVersionModel>() { version };
+                return pok;
+            },
+            new { pokemonId, versionId }, splitOn: "versionId, typeId, evolvesTo", commandType: CommandType.StoredProcedure
+        );
+
+        if (pokemon.Count() == 0)
+            return new PokemonLineModel();
+
+        var result = PrepareModel(pokemon);
+        return result as PokemonLineModel;
+    }
+
+    public async Task Insert(PokemonModel pokemon)
+    {
+        using IDbConnection conn = new SqlConnection(_connectionString);
+        await conn.ExecuteAsync("sp_pokedex_InsertPokemon", pokemon, commandType: CommandType.StoredProcedure);
+    }
+
+    public async Task Update(PokemonModel pokemon)
+    {
+        using IDbConnection conn = new SqlConnection(_connectionString);
+        await conn.ExecuteAsync("sp_pokedex_UpdatePokemon", pokemon, commandType: CommandType.StoredProcedure);
+    }
+
+    public async Task Delete(int pokemonId)
+    {
+        using IDbConnection conn = new SqlConnection(_connectionString);
+        await conn.ExecuteAsync("sp_pokedex_DeletePokemon", new { Id = pokemonId }, commandType: CommandType.StoredProcedure);
+    }
+
+    private PokemonModel PrepareModel(IEnumerable<PokemonModel> pokemon)
+    {
         var result = pokemon.GroupBy(p => p.Id).Select(g =>
         {
             var pok = g.First();
             pok.Types = g.Select(p => p.Types.Single()).ToList();
             if (pok.EvolvesTo.Count() > 0)
                 pok.EvolvesTo = g.Select(p => p.EvolvesTo.Single()).ToList();
+            pok.Version = g.Select(p => p.Version.Single()).ToList();
             return pok;
-        });
-        var res = result.FirstOrDefault();
-        res.Types = res.Types.GroupBy(t => t.Id).Select(t => t.First()).ToList();
-        res.EvolvesTo = res.EvolvesTo.GroupBy(e => e).Select(t => t.First()).ToList();
-        return res;
-    }
+        }).First();
 
-    public void Insert(PokemonModel pokemon)
-    {
-        _sql.ExecuteNonQueryStoredProcedure("sp_pokedex_InsertPokemon", pokemon);
-    }
-
-    public void Update(PokemonModel pokemon)
-    {
-        _sql.ExecuteNonQueryStoredProcedure("sp_pokedex_UpdatePokemon", pokemon);
-    }
-
-    public void Delete(int pokemonId)
-    {
-        _sql.ExecuteNonQueryStoredProcedure("sp_pokedex_DeletePokemon", new { Id = pokemonId });
+        result.Types = result.Types.GroupBy(t => t.Id).Select(t => t.First()).ToList();
+        result.EvolvesTo = result.EvolvesTo.GroupBy(e => e).Select(e => e.First()).ToList();
+        result.Version = result.Version.GroupBy(v => v.VersionId).Select(v => v.First()).ToList();
+        return result;
     }
 }

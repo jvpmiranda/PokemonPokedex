@@ -1,6 +1,13 @@
 namespace ApiPokedex.Contract.v1.Out;
 
-public class OutBasicPokemon
+public class OutFullPokemon : OutBasicPokemon
+{
+    public List<OutEvolutionPokemon> Evolutions { get; set; }
+
+    public OutPreEvolutionPokemon PreEvolution { get; set; }
+}
+
+public class OutBasicPokemon : ErrorStatus
 {
     public int Id { get; set; }
 
@@ -12,21 +19,11 @@ public class OutBasicPokemon
 
     public int GenerationNumber { get; set; }
 
-    public string Description { get; set; }
+    public IEnumerable<OutGameVersion> Version { get; set; }
 
     public IEnumerable<OutTypeOfPokemon> Types { get; set; }
-}
 
-public class OutFullPokemon : OutBasicPokemon
-{
-    public OutFullPokemon()
-    {
-        Evolutions = new List<OutEvolutionPokemon>();
-    }
-
-    public List<OutEvolutionPokemon> Evolutions { get; set; }
-
-    public OutPreEvolutionPokemon PreEvolution { get; set; }
+    public string ImageName { get; set; }
 }
 
 
@@ -40,4 +37,3 @@ public class OutPreEvolutionPokemon : OutBasicPokemon
 {
     public OutPreEvolutionPokemon PreEvolution { get; set; }
 }
-
