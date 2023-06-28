@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PokedexApiCaller;
-using PokedexApiCaller.Caller;
+using PokedexApiCaller.Interfaces;
+using PokedexApiCaller.Services;
 
 namespace DatabaseUtilitary;
 
@@ -14,17 +14,19 @@ internal class Program
         Console.WriteLine("Api Caller!");
 
         var configuration = StartConfiguration();
-        var build = StartServices();
-        var jwtSettings = ActivatorUtilities.CreateInstance<JwtSettings>(build.Services);
-        var apiUrl = ActivatorUtilities.CreateInstance<ApiUrl>(build.Services);
+        JwtSettings jwtSettings = new();
+        ApiUrl apiUrl = new();
         ConfigurationBinder.Bind(configuration, "JwtSettings", jwtSettings);
         ConfigurationBinder.Bind(configuration, "ApiUrl", apiUrl);
+        var buildSqlServer = StartServicesSqlServer(jwtSettings, apiUrl);
 
-        var auth = new AuthCallerApiCaller(apiUrl.PokedexSQLServer, jwtSettings.Secret);
-        var pok = new PokedexVersionApiCaller(apiUrl.PokedexSQLServer);
+        var auth = buildSqlServer.Services.GetRequiredService<IAuthCallerApiCaller>();
+        var vers = buildSqlServer.Services.GetRequiredService<IPokedexVersionApiCaller>();
+        var img = buildSqlServer.Services.GetRequiredService<IPokemonImageApiCaller>();
+        var pok = buildSqlServer.Services.GetRequiredService<IPokemonApiCaller>();
 
         pok.Auth = auth.GetToken("Joao").Result;
-        var versions = pok.GetVersion(null).Result;
+        var versions = vers.GetVersion(null).Result;
 
         Parallel.ForEach(versions, item => 
             Console.WriteLine(item.Id.ToString() + " - " + item.Name)
@@ -41,13 +43,18 @@ internal class Program
         return config.Build();
     }
 
-    static IHost StartServices()
+    static IHost StartServicesSqlServer(JwtSettings jwtSettings, ApiUrl apiUrl)
     {
         var host = Host.CreateDefaultBuilder();
         host.ConfigureServices((context, services) =>
-            {
-                services.AddSingleton<ApiUrl>();
-            });
+        {
+            //services.AddSingleton<ApiUrl>();
+            //services.AddSingleton<JwtSettings>();
+            services.AddTransient<IPokemonImageApiCaller>(x => new PokemonImageApiCaller(apiUrl.PokedexSQLServer));
+            services.AddTransient<IPokemonApiCaller>(x => new PokemonApiCaller(apiUrl.PokedexSQLServer));
+            services.AddTransient<IPokedexVersionApiCaller>(x => new PokedexVersionApiCaller(apiUrl.PokedexSQLServer));
+            services.AddTransient<IAuthCallerApiCaller>(x => new AuthCallerApiCaller(apiUrl.PokedexSQLServer, jwtSettings.Secret));
+        });
         return host.Build();
     }
 }

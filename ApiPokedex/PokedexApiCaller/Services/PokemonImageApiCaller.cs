@@ -1,10 +1,11 @@
 ﻿using PokedexApiCaller.Contract;
 using PokedexApiCaller.Contract.v1.Out;
 using PokedexApiCaller.Factory;
+using PokedexApiCaller.Interfaces;
 
-namespace PokedexApiCaller.Caller;
+namespace PokedexApiCaller.Services;
 
-public class PokemonImageApiCaller
+public class PokemonImageApiCaller : IPokemonImageApiCaller
 {
     private readonly string _baseUrlApi;
     public Authentication Auth { get; set; }

@@ -2,7 +2,7 @@ namespace PokedexApiCaller.Contract.v1.Out;
 
 public class OutGetBasicInfoPokemon : List<OutBasicInfoPokemon> { }
 
-public class OutBasicInfoPokemon
+public class OutBasicInfoPokemon : ErrorStatus
 {
     public int Id { get; set; }
 

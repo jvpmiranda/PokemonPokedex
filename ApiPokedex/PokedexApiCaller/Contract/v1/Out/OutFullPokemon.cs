@@ -7,7 +7,7 @@ public class OutFullPokemon : OutBasicPokemon
     public OutPreEvolutionPokemon PreEvolution { get; set; }
 }
 
-public class OutBasicPokemon
+public class OutBasicPokemon : ErrorStatus
 {
     public int Id { get; set; }
 

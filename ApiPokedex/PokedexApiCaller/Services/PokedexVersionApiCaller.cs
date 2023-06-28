@@ -3,11 +3,12 @@ using ApiPokedex.Contract.v1.In;
 using PokedexApiCaller.Contract;
 using PokedexApiCaller.Contract.v1.Out;
 using PokedexApiCaller.Factory;
+using PokedexApiCaller.Interfaces;
 using System;
 
-namespace PokedexApiCaller.Caller;
+namespace PokedexApiCaller.Services;
 
-public class PokedexVersionApiCaller
+public class PokedexVersionApiCaller : IPokedexVersionApiCaller
 {
     private readonly string _baseUrlApi;
     public Authentication Auth { get; set; }
@@ -39,6 +40,6 @@ public class PokedexVersionApiCaller
     public async Task Delete(int versionId)
     {
         HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
-        await client.DeleteAsync($"api/v1/PokedexVersion/Delete/{versionId}");    
+        await client.DeleteAsync($"api/v1/PokedexVersion/Delete/{versionId}");
     }
 }

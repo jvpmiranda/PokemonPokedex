@@ -1,6 +1,6 @@
 namespace PokedexApiCaller.Contract.v1.Out;
 
-public class OutTypeOfPokemon
+public class OutTypeOfPokemon : ErrorStatus
 {
     public int Id { get; set; }
 

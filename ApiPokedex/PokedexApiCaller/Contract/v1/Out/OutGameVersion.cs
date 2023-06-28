@@ -1,6 +1,6 @@
 ﻿namespace PokedexApiCaller.Contract.v1.Out;
 
-public class OutGameVersion
+public class OutGameVersion : ErrorStatus
 {
     public int VersionId { get; set; }
 

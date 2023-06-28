@@ -1,13 +1,14 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using PokedexApiCaller.Contract;
 using PokedexApiCaller.Factory;
+using PokedexApiCaller.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace PokedexApiCaller;
+namespace PokedexApiCaller.Services;
 
-public class AuthCallerApiCaller
+public class AuthCallerApiCaller : IAuthCallerApiCaller
 {
     private readonly object _lockNewToken = new object();
     private readonly string _baseUrlApi;
