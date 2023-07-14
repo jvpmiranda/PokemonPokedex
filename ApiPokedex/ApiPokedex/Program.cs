@@ -1,49 +1,23 @@
 using ApiPokedex.Middleware;
 using ApiPokedex.Options;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using PokedexDataAccess.DataAccess.Dapper;
-using PokedexDataAccess.Interfaces;
 using PokedexServices.Interfaces;
 using PokedexServices.Services;
 using System.Reflection;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+// Add services to the container.
+
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-// Add services to the container.
 var jwtSettings = new JwtSettings();
 builder.Configuration.Bind(nameof(jwtSettings), jwtSettings);
 builder.Services.AddSingleton(jwtSettings);
 
 builder.Services.AddJwtAuthentication(jwtSettings.Secret);
-//builder.Services.AddAuthentication(x =>
-//                {
-//                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//                })
-//                .AddJwtBearer(x =>
-//                {
-//                    //x.RequireHttpsMetadata = false;
-//                    x.SaveToken = true;
-//                    x.TokenValidationParameters = new TokenValidationParameters
-//                    {
-//                        ValidateIssuerSigningKey = true,
-//                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
-//                        ValidateIssuer = false,
-//                        ValidateAudience = false,
-//                        RequireExpirationTime = true,
-//                        ValidateLifetime = true
-//                    };
-//                });
-
-
 builder.Services.AddControllers();
 builder.Services.AddApiVersioning(option =>
 {
@@ -82,7 +56,7 @@ builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 builder.Services.AddScoped<ExceptionHandlerMiddleware>();
 builder.Services.AddScoped<LoggerMiddleware>();
 
-builder.Services.AddTransient<IPokedexService, PokedexService>();
+builder.Services.AddTransient<IPokemonService, PokemonService>();
 builder.Services.AddTransient<IPokedexVersionService, PokedexVersionService>();
 builder.Services.AddTransient<IImageService, ImageService>();
 
@@ -91,29 +65,9 @@ builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
-var typeOfConnection = builder.Configuration.GetConnectionString("TypeOfDataBaseConnection")!;
-if (typeOfConnection == "ADO")
-{
-    //builder.Services.AddTransient<ISqlServerADOQuery>(s => new SqlServerADOQuery(builder.Configuration.GetConnectionString("Pokedex")));
-    //builder.Services.AddTransient<IPokedexDataAccessService, PokedexADOSqlServer>();
-}
-else if (typeOfConnection == "EF")
-{
-    //builder.Services.AddTransient<IPokedexDataAccessService, PokedexEntityFramework>();
+builder.AddServicesByTypeOfConnection();
 
-    //builder.Services.AddDbContext<DbPokedexContext>(options =>
-    //{
-    //    options.UseSqlServer(builder.Configuration.GetConnectionString("Pokedex")!);
-    //});
-}
-else if (typeOfConnection == "DAPPER")
-{
-    string connectionString = builder.Configuration.GetConnectionString("PokedexSQLServer")!;
-    builder.Services.AddTransient<IImageDataAccessService, ImageDapper>(i => new ImageDapper(connectionString));
-    builder.Services.AddTransient<IPokedexDataAccessService, PokedexDapper>(s => new PokedexDapper(connectionString));
-    builder.Services.AddTransient<IPokedexVersionDataAccessService, PokedexVersionDapper>(v => new PokedexVersionDapper(connectionString));
-}
-    var app = builder.Build();
+var app = builder.Build();
 
 app.UseLoggerMiddleware();
 app.UseExceptionHandlerMiddleware();

@@ -1,19 +1,27 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.0.143" />
-  </ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="DataAccess\EF\**" />
+	  <EmbeddedResource Remove="DataAccess\EF\**" />
+	  <None Remove="DataAccess\EF\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\PokedexEntityFramework\PokedexEF.csproj" />
-    <ProjectReference Include="..\PokedexModels\PokedexModels.csproj" />
-    <ProjectReference Include="..\SqlServerDataBaseConnection\SqlServerADOConnection.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="12.0.1" />
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+		<PackageReference Include="Dapper" Version="2.0.143" />
+		<PackageReference Include="MongoDB.Driver" Version="2.20.0" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\PokedexModels\PokedexModels.csproj" />
+	</ItemGroup>
 
 </Project>

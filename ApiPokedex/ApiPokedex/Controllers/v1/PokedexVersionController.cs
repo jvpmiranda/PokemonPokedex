@@ -26,7 +26,7 @@ public class PokedexVersionController : ControllerBase
     [HttpGet("{versionId?}")]
     public ActionResult<OutGetPokedexVersion> GetVersion(int? versionId = null)
     {
-        var pokedex = _pokedexVersion.Get(versionId);
+        var pokedex = _pokedexVersion.Get(versionId).Result;
         OutGetPokedexVersion result = _mapper.Map<OutGetPokedexVersion>(pokedex);
         return Ok(result);
     }

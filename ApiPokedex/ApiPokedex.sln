@@ -5,11 +5,7 @@ VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiPokedex", "ApiPokedex\ApiPokedex.csproj", "{DE618D9C-A8D6-40BF-93BD-44B419351F9D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlServerADOConnection", "SqlServerDataBaseConnection\SqlServerADOConnection.csproj", "{A238CD50-228C-49F5-9226-48E48B1B895E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokedexServices", "PokedexServices\PokedexServices.csproj", "{F9B4441E-752D-4D0E-A7A1-BC89606631A4}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokedexEF", "PokedexEntityFramework\PokedexEF.csproj", "{5755FF1F-6BA2-49F3-AF25-0A72575996E2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokedexModels", "PokedexModels\PokedexModels.csproj", "{02AFA373-70D9-4351-B27B-0F75306165EF}"
 EndProject
@@ -25,18 +21,10 @@ Global
 		{DE618D9C-A8D6-40BF-93BD-44B419351F9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE618D9C-A8D6-40BF-93BD-44B419351F9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE618D9C-A8D6-40BF-93BD-44B419351F9D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A238CD50-228C-49F5-9226-48E48B1B895E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A238CD50-228C-49F5-9226-48E48B1B895E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A238CD50-228C-49F5-9226-48E48B1B895E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A238CD50-228C-49F5-9226-48E48B1B895E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F9B4441E-752D-4D0E-A7A1-BC89606631A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F9B4441E-752D-4D0E-A7A1-BC89606631A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9B4441E-752D-4D0E-A7A1-BC89606631A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9B4441E-752D-4D0E-A7A1-BC89606631A4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5755FF1F-6BA2-49F3-AF25-0A72575996E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5755FF1F-6BA2-49F3-AF25-0A72575996E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5755FF1F-6BA2-49F3-AF25-0A72575996E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5755FF1F-6BA2-49F3-AF25-0A72575996E2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{02AFA373-70D9-4351-B27B-0F75306165EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{02AFA373-70D9-4351-B27B-0F75306165EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02AFA373-70D9-4351-B27B-0F75306165EF}.Release|Any CPU.ActiveCfg = Release|Any CPU

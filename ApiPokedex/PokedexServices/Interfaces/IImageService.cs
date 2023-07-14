@@ -4,5 +4,8 @@ namespace PokedexServices.Interfaces;
 
 public interface IImageService
 {
-    ImageModel GetImage(int pokemonId);
+    Task Delete(int pokemonId);
+    Task<ImageModel> GetImage(int pokemonId);
+    Task Insert(ImageModel image);
+    Task Update(ImageModel image);
 }

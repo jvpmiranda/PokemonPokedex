@@ -14,6 +14,7 @@ namespace ApiPokedex.Controllers;
 [ApiVersion("1.0")]
 public class AuthController : ControllerBase
 {
+    private const int MinutesTokenIsValid = 15;
     public JwtSettings _jwtSettings { get; set; }
 
     public AuthController(JwtSettings jwtSettings)
@@ -36,7 +37,7 @@ public class AuthController : ControllerBase
             };
 
         var claims = handler.ValidateToken(token, validations, out var tokenSecure);
-        if (claims.HasClaim("clientId", ApiInformation.ClientId.ToString()) &&
+        if (claims.HasClaim("clientId", Configuration.ClientId.ToString()) &&
             claims.HasClaim(c => c.Type == "name"))
         {
             return Ok(CreateToken(claims.FindFirstValue("name")));
@@ -56,7 +57,7 @@ public class AuthController : ControllerBase
                 new Claim(ClaimTypes.Role, "Authenticated")
             };
 
-        var expires = DateTime.UtcNow.AddMinutes(15);
+        var expires = DateTime.UtcNow.AddMinutes(MinutesTokenIsValid);
 
         var token = new JwtSecurityToken(
             //_jwtSettings.Issuer,

@@ -6,10 +6,6 @@ public class PokedexVersionModel
 
     public string Name { get; set; }
 
-    public int GroupId { get; set; }
-
-    public string VersionName { get; set; }
-
-    public int GenerationNumber { get; set; }
+    public PokedexVersionGroupModel VersionGroup { get; set; }
 
 }

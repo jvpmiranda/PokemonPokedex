@@ -8,9 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PokedexDataAccess\PokedexDataAccess.csproj" />
-    <ProjectReference Include="..\PokedexEntityFramework\PokedexEF.csproj" />
     <ProjectReference Include="..\PokedexModels\PokedexModels.csproj" />
-    <ProjectReference Include="..\SqlServerDataBaseConnection\SqlServerADOConnection.csproj" />
   </ItemGroup>
 
 </Project>

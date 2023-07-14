@@ -4,8 +4,8 @@ namespace PokedexServices.Interfaces;
 
 public interface IPokedexVersionService
 {
-    void Delete(int versionId);
-    IEnumerable<PokedexVersionModel> Get(int? versionId);
-    void Insert(PokedexVersionModel version);
-    void Update(PokedexVersionModel version);
+    Task Delete(int versionId);
+    Task<IEnumerable<PokedexVersionModel>> Get(int? versionId);
+    Task Insert(PokedexVersionModel version);
+    Task Update(PokedexVersionModel version);
 }

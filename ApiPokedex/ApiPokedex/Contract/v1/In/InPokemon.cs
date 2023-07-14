@@ -12,24 +12,27 @@ public class InPokemon
 
     public int GenerationNumber { get; set; }
 
-    public int? EvolvesFrom { get; set; }
+    public int? EvolvesFromId { get; set; }
 
-    public IEnumerable<int> EvolvesTo { get; set; }
+    public IEnumerable<int>? EvolvesToId { get; set; }
 
     public IEnumerable<InType> Types { get; set; }
 
-    public IEnumerable<InAvailableVersions> AvailableVersions { get; set; }
+    public IEnumerable<InPokemonVersion> Versions { get; set; }
+
+    public string ImageName { get; set; }
 }
 
-public class InAvailableVersions
+public class InPokemonVersion
 {
-    public int Id { get; set; }
+    public int VersionId { get; set; }
 
-    public int Name { get; set; }
+    public string VersionName { get; set; }
+
+    public string Description { get; set; }
 }
 public class InType
 {
     public int Id { get; set; }
-
-    public int Name { get; set; }
+    public string Name { get; set; }
 }

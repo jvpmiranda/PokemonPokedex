@@ -13,10 +13,10 @@ namespace ApiPokedex.Controllers.v1;
 [ApiVersion("1.0")]
 public class PokemonController : ControllerBase
 {
-    private readonly IPokedexService _pokedex;
+    private readonly IPokemonService _pokedex;
     private readonly IMapper _mapper;
 
-    public PokemonController(IPokedexService pokedex, IMapper mapper)
+    public PokemonController(IPokemonService pokedex, IMapper mapper)
     {
         _pokedex = pokedex;
         _mapper = mapper;
@@ -31,28 +31,17 @@ public class PokemonController : ControllerBase
     [HttpGet("{pokemonId?}")]
     public ActionResult<OutGetBasicInfoPokemon> GetBasicInfo(int? pokemonId = null)
     {
-        if (pokemonId.HasValue && pokemonId.Value == 10)
-        throw new Exception("teste");
         var pokemon = _pokedex.GetBasicPokemon(pokemonId).Result;
         var result = _mapper.Map<IEnumerable<OutBasicInfoPokemon>>(pokemon);
         return Ok(result);
     }
 
     [Authorize(Roles = "Authenticated")]
-    [HttpGet("{pokemonId}")]
-    public ActionResult<OutPokemon> GetInfo(int pokemonId)
-    {
-        var pok = _pokedex.GetPokemon(pokemonId).Result;
-        var result = _mapper.Map<OutPokemon>(pok);
-        return Ok(result);
-    }
-
-    [Authorize(Roles = "Authenticated")]
     [HttpGet("{pokemonId}/{versionId}")]
-    public ActionResult<OutFullPokemon> GetFullInfo(int pokemonId, int versionId)
+    public ActionResult<OutPokemon> GetInfo(int pokemonId, int versionId)
     {
-        var pok = _pokedex.GetPokemonFullInfo(pokemonId, versionId).Result;
-        OutFullPokemon results = _mapper.Map<OutFullPokemon>(pok);
+        var pok = _pokedex.GetPokemon(pokemonId, versionId).Result;
+        OutPokemon results = _mapper.Map<OutPokemon>(pok);
         return Ok(results);
     }
 
@@ -60,7 +49,7 @@ public class PokemonController : ControllerBase
     [HttpPost]
     public ActionResult Post(InPokemon pokemon)
     {
-         _pokedex.Insert(_mapper.Map<PokemonModel>(pokemon));
+        _pokedex.Insert(_mapper.Map<PokemonModel>(pokemon));
         return Ok();
     }
 

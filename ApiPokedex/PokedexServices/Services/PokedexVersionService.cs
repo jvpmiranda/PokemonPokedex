@@ -7,32 +7,38 @@ namespace PokedexServices.Services;
 
 public class PokedexVersionService : IPokedexVersionService
 {
-    protected readonly IPokedexVersionDataAccessService _dataAccess;
+    private readonly IPokedexVersionDataAccess _pokedexVersion;
+    private readonly IPokedexVersionGroupDataAccess _pokedexVersionGroup;
 
-    public PokedexVersionService(IPokedexVersionDataAccessService dataAccess)
+    public PokedexVersionService(IPokedexVersionDataAccess pokedexVersion, IPokedexVersionGroupDataAccess pokedexVersionGroup)
     {
-        _dataAccess = dataAccess;
+        _pokedexVersion = pokedexVersion;
+        _pokedexVersionGroup = pokedexVersionGroup;
     }
 
-    public IEnumerable<PokedexVersionModel> Get(int? versionId)
+    public async Task<IEnumerable<PokedexVersionModel>> Get(int? versionId)
     {
-        int value = versionId.HasValue ? versionId.Value : 0;
-        return _dataAccess.Get(value).Result;
+        return await _pokedexVersion.Get(versionId);
     }
 
-    public void Delete(int versionId)
+    public async Task Delete(int versionId)
     {
-        _dataAccess.Delete(versionId);
+        await _pokedexVersion.Delete(versionId);
     }
 
-    public void Insert(PokedexVersionModel version)
+    public async Task Insert(PokedexVersionModel version)
     {
-        _dataAccess.Insert(version);
+        await _pokedexVersion.UseTransaction(tran =>
+        {
+            _pokedexVersionGroup.UpsertInTransaction(version.VersionGroup, tran);
+            _pokedexVersion.UpsertInTransaction(version, tran);
+            return true;
+        }
+        );
     }
 
-    public void Update(PokedexVersionModel version)
+    public async Task Update(PokedexVersionModel version)
     {
-        _dataAccess.Update(version);
+        await _pokedexVersion.Upsert(version);
     }
-
 }

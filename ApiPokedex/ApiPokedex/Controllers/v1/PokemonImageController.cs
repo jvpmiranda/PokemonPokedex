@@ -1,7 +1,9 @@
+using ApiPokedex.Contract.v1.In;
 using ApiPokedex.Contract.v1.Out;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PokedexModels.Model;
 using PokedexServices.Interfaces;
 using System.Data;
 
@@ -30,8 +32,33 @@ public class PokemonImageController : ControllerBase
     [HttpGet("{pokemonId}")]
     public ActionResult<OutImage> GetImage(int pokemonId)
     {
-        var pokemon = _image.GetImage(pokemonId);
+        var pokemon = _image.GetImage(pokemonId).Result;
         var result = _mapper.Map<OutImage>(pokemon);
         return Ok(result);
+    }
+
+    [Authorize(Roles = "Authenticated")]
+    [HttpPost]
+    public ActionResult Post(InImage image)
+    {
+        var pokedex = _mapper.Map<ImageModel>(image);
+        _image.Insert(pokedex);
+        return Ok();
+    }
+
+    [Authorize(Roles = "Authenticated")]
+    [HttpPut]
+    public ActionResult Put(InImage image)
+    {
+        _image.Update(_mapper.Map<ImageModel>(image));
+        return Ok();
+    }
+
+    [Authorize(Roles = "Authenticated")]
+    [HttpDelete("{versionId}")]
+    public ActionResult Delete(int pokemonId)
+    {
+        _image.Delete(pokemonId);
+        return Ok();
     }
 }
