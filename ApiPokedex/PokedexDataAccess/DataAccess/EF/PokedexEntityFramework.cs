@@ -3,6 +3,7 @@ using PokedexEF.Model;
 using PokedexModels.Model;
 using PokedexDataAccess.Interfaces;
 using System.Data;
+using PokedexDataAccess.Model.MongoDb;
 
 namespace PokedexDataAccess.DataAccess.EF;
 

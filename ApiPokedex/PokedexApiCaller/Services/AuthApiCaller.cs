@@ -8,15 +8,15 @@ using System.Text;
 
 namespace PokedexApiCaller.Services;
 
-public class AuthCallerApiCaller : IAuthCallerApiCaller
+public class AuthApiCaller : IAuthApiCaller
 {
     private readonly object _lockNewToken = new object();
     private readonly string _baseUrlApi;
     private readonly string _secret;
     private readonly int _clientId = 13031995;
-    private static Authentication Auth = new Authentication();
+    private Authentication Auth = new Authentication();
 
-    public AuthCallerApiCaller(string baseUrlApi, string secret)
+    public AuthApiCaller(string baseUrlApi, string secret)
     {
         _baseUrlApi = baseUrlApi;
         _secret = secret;

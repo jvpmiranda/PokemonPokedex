@@ -2,7 +2,7 @@
 
 namespace PokedexApiCaller.Interfaces
 {
-    public interface IAuthCallerApiCaller
+    public interface IAuthApiCaller
     {
         Task<Authentication> GetToken(string name);
     }

@@ -1,4 +1,4 @@
-﻿using ApiPokedex.Contract.v1.In;
+﻿using PokedexApiCaller.Contract.v1.In;
 using PokedexApiCaller.Contract.v1.Out;
 
 namespace PokedexApiCaller.Interfaces

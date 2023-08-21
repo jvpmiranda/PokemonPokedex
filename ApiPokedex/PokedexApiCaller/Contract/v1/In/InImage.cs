@@ -1,6 +1,6 @@
-namespace PokedexApiCaller.Contract.v1.Out;
+namespace PokedexApiCaller.Contract.v1.In;
 
-public class OutImage : ErrorStatus
+public class InImage
 {
     public int PokemonId { get; set; }
 

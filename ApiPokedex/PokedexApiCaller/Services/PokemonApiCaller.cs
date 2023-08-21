@@ -1,5 +1,5 @@
-﻿using ApiPokedex.Contract.v1.In;
-using PokedexApiCaller.Contract;
+﻿using PokedexApiCaller.Contract;
+using PokedexApiCaller.Contract.v1.In;
 using PokedexApiCaller.Contract.v1.Out;
 using PokedexApiCaller.Factory;
 using PokedexApiCaller.Interfaces;
@@ -23,24 +23,14 @@ public class PokemonApiCaller : IPokemonApiCaller
         return new OutGetBasicInfoPokemon();
     }
 
-    public async Task<OutPokemon> GetInfo(int pokemonId)
+    public async Task<OutPokemon> GetInfo(int pokemonId, int versionId)
     {
         HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
-        HttpResponseMessage response = await client.GetAsync($"api/v1/Pokemon/GetInfo/{pokemonId}/");
+        HttpResponseMessage response = await client.GetAsync($"api/v1/Pokemon/GetInfo/{pokemonId}/{versionId}");
         if (response.IsSuccessStatusCode)
             return await response.Content.ReadAsAsync<OutPokemon>();
 
         return new OutPokemon();
-    }
-
-    public async Task<OutFullPokemon> GetFullInfo(int pokemonId, int versionId)
-    {
-        HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
-        HttpResponseMessage response = await client.GetAsync($"api/v1/Pokemon/GetFullInfo/{pokemonId}/{versionId}");
-        if (response.IsSuccessStatusCode)
-            return await response.Content.ReadAsAsync<OutFullPokemon>();
-
-        return new OutFullPokemon();
     }
 
     public async Task Post(InPokemon pokemon)
@@ -57,7 +47,14 @@ public class PokemonApiCaller : IPokemonApiCaller
 
     public async Task Delete(int pokemonId)
     {
-        HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
-        await client.DeleteAsync($"api/v1/Pokemon/Delete/{pokemonId}");
+        try
+        {
+            HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
+            await client.DeleteAsync($"api/v1/Pokemon/Delete/{pokemonId}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
     }
 }

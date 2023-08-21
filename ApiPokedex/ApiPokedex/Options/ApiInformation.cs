@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Connections.Features;
-using PokedexDataAccess.DataAccess.Dapper;
+﻿using PokedexDataAccess.DataAccess.Dapper;
 using PokedexDataAccess.DataAccess.MongoDb;
 using PokedexDataAccess.Extensions.Mongo;
 using PokedexDataAccess.Interfaces;
@@ -13,15 +12,9 @@ public static class Configuration
 
     public static void AddServicesByTypeOfConnection(this WebApplicationBuilder builder)
     {
-        var typeOfConnection = builder.Configuration.GetConnectionString("TypeOfDataBaseConnection")!;
+        var typeOfConnection = builder.Configuration.GetValue<string>("TypeOfDataBaseConnection");
         switch (typeOfConnection)
         {
-            case "ADO":
-                builder.AddServicesAdo();
-                break;
-            case "EF":
-                builder.AddServicesEf();
-                break;
             case "DAPPER":
                 builder.AddServicesDapper();
                 break;
@@ -29,21 +22,6 @@ public static class Configuration
                 builder.AddServicesMongoDb();
                 break;
         }
-    }
-
-    private static void AddServicesAdo(this WebApplicationBuilder builder)
-    {
-        //builder.Services.AddTransient<ISqlServerADOQuery>(s => new SqlServerADOQuery(builder.Configuration.GetConnectionString("Pokedex")));
-        //builder.Services.AddTransient<IPokedexDataAccessService, PokedexADOSqlServer>();
-    }
-
-    private static void AddServicesEf(this WebApplicationBuilder builder)
-    {
-        //builder.Services.AddTransient<IPokedexDataAccessService, PokedexEntityFramework>();
-        //builder.Services.AddDbContext<DbPokedexContext>(options =>
-        //{
-        //    options.UseSqlServer(builder.Configuration.GetConnectionString("Pokedex")!);
-        //});
     }
 
     private static void AddServicesDapper(this WebApplicationBuilder builder)

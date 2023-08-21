@@ -1,10 +1,8 @@
-﻿using ApiPokedex.Contract;
-using ApiPokedex.Contract.v1.In;
-using PokedexApiCaller.Contract;
+﻿using PokedexApiCaller.Contract;
+using PokedexApiCaller.Contract.v1.In;
 using PokedexApiCaller.Contract.v1.Out;
 using PokedexApiCaller.Factory;
 using PokedexApiCaller.Interfaces;
-using System;
 
 namespace PokedexApiCaller.Services;
 
@@ -27,6 +25,8 @@ public class PokedexVersionApiCaller : IPokedexVersionApiCaller
 
     public async Task Post(InPokedexVersion pokedexVersion)
     {
+        pokedexVersion.Id = 100;
+        pokedexVersion.GroupId = 100;
         HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
         await client.PostAsJsonAsync($"api/v1/PokedexVersion/Post", pokedexVersion);
     }

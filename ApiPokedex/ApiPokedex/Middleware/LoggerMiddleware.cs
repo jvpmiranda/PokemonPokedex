@@ -1,6 +1,4 @@
-﻿using Azure.Core;
-
-namespace ApiPokedex.Middleware;
+﻿namespace ApiPokedex.Middleware;
 
 public class LoggerMiddleware : IMiddleware
 {

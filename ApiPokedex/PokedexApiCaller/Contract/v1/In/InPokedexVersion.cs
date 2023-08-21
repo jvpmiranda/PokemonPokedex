@@ -1,4 +1,4 @@
-namespace ApiPokedex.Contract.v1.In;
+namespace PokedexApiCaller.Contract.v1.In;
 
 public class InPokedexVersion
 {
@@ -6,5 +6,9 @@ public class InPokedexVersion
 
     public string Name { get; set; }
 
-    public int VersionGroupId { get; set; }
+    public int GroupId { get; set; }
+
+    public string VersionName { get; set; }
+
+    public int GenerationNumber { get; set; }
 }

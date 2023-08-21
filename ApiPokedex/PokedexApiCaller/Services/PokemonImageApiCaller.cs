@@ -1,4 +1,5 @@
 ﻿using PokedexApiCaller.Contract;
+using PokedexApiCaller.Contract.v1.In;
 using PokedexApiCaller.Contract.v1.Out;
 using PokedexApiCaller.Factory;
 using PokedexApiCaller.Interfaces;
@@ -20,5 +21,23 @@ public class PokemonImageApiCaller : IPokemonImageApiCaller
             return await response.Content.ReadAsAsync<OutImage>();
 
         return new OutImage();
+    }
+
+    public async Task Post(InImage image)
+    {
+        HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
+        await client.PostAsJsonAsync($"api/v1/PokemonImage/Post", image);
+    }
+
+    public async Task Put(InImage image)
+    {
+        HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
+        await client.PutAsJsonAsync($"api/v1/PokemonImage/Put", image);
+    }
+
+    public async Task Delete(int pokemonId)
+    {
+        HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
+        await client.DeleteAsync($"api/v1/PokemonImage/Delete/{pokemonId}");
     }
 }
