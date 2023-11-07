@@ -28,10 +28,10 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Publish
-      run: dotnet publish ApiPokedex/ApiPokedex/ApiPokedex.csproj -c Release -o apiPokedex
+      run: dotnet publish ApiPokedex.csproj -c Release -o PokedexApi
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: apiPokedex
+        name: PokedexApi
         path: ApiPokedex/ApiPublished/**
         if-no-files-found: error
