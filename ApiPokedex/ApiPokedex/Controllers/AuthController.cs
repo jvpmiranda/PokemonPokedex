@@ -38,9 +38,9 @@ public class AuthController : ControllerBase
 
         var claims = handler.ValidateToken(token, validations, out var tokenSecure);
         if (claims.HasClaim("clientId", Configuration.ClientId.ToString()) &&
-            claims.HasClaim(c => c.Type == "name"))
+            claims.HasClaim(c => c.Type == ClaimTypes.Name))
         {
-            return Ok(CreateToken(claims.FindFirstValue("name")));
+            return Ok(CreateToken(claims.FindFirstValue(ClaimTypes.Name)));
         }
         else
             return ValidationProblem("token informed is not valid");
@@ -57,7 +57,8 @@ public class AuthController : ControllerBase
                 new Claim(ClaimTypes.Role, "Authenticated")
             };
 
-        var expires = DateTime.UtcNow.AddMinutes(MinutesTokenIsValid);
+        //TODO: Change to Minutes
+        var expires = DateTime.UtcNow.AddDays(MinutesTokenIsValid);
 
         var token = new JwtSecurityToken(
             //_jwtSettings.Issuer,

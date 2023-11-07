@@ -8,15 +8,21 @@ namespace PokedexApiCaller.Services;
 
 public class PokedexVersionApiCaller : IPokedexVersionApiCaller
 {
-    private readonly string _baseUrlApi;
+    private HttpClient _client;
+    private readonly FactoryHttpClient _factory;
+
     public Authentication Auth { get; set; }
 
-    public PokedexVersionApiCaller(string baseUrlApi) => _baseUrlApi = baseUrlApi;
+    public PokedexVersionApiCaller(FactoryHttpClient factory)
+    {
+        _factory = factory;
+        _client = _factory.Create();
+    }
 
     public async Task<OutGetPokedexVersion> GetVersion(int? versionId)
     {
-        HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
-        HttpResponseMessage response = await client.GetAsync($"api/v1/PokedexVersion/GetVersion/{versionId}");
+        _client.SetAuthentication(Auth);
+        HttpResponseMessage response = await _client.GetAsync($"api/v1/PokedexVersion/GetVersion/{versionId}").ConfigureAwait(false);
         if (response.IsSuccessStatusCode)
             return await response.Content.ReadAsAsync<OutGetPokedexVersion>();
 
@@ -25,21 +31,19 @@ public class PokedexVersionApiCaller : IPokedexVersionApiCaller
 
     public async Task Post(InPokedexVersion pokedexVersion)
     {
-        pokedexVersion.Id = 100;
-        pokedexVersion.GroupId = 100;
-        HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
-        await client.PostAsJsonAsync($"api/v1/PokedexVersion/Post", pokedexVersion);
+        _client.SetAuthentication(Auth);
+        await _client.PostAsJsonAsync($"api/v1/PokedexVersion/Post", pokedexVersion).ConfigureAwait(false);
     }
 
     public async Task Put(InPokedexVersion pokedexVersion)
     {
-        HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
-        await client.PutAsJsonAsync($"api/v1/PokedexVersion/Put", pokedexVersion);
+        _client.SetAuthentication(Auth);
+        await _client.PutAsJsonAsync($"api/v1/PokedexVersion/Put", pokedexVersion).ConfigureAwait(false);
     }
 
     public async Task Delete(int versionId)
     {
-        HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
-        await client.DeleteAsync($"api/v1/PokedexVersion/Delete/{versionId}");
+        _client.SetAuthentication(Auth);
+        await _client.DeleteAsync($"api/v1/PokedexVersion/Delete/{versionId}").ConfigureAwait(false);
     }
 }

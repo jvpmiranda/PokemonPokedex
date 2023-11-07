@@ -9,9 +9,9 @@ public abstract class ConnectionDapper : IDataAccessTransaction
     private IDbTransaction _transaction;
     private IDbConnection _connection;
 
-    protected IFactoryDbConnection Factory { get; private set; }
+    protected FactoryDbConnection Factory { get; private set; }
 
-    public ConnectionDapper(IFactoryDbConnection factory)
+    public ConnectionDapper(FactoryDbConnection factory)
     {
         Factory = factory;
     }

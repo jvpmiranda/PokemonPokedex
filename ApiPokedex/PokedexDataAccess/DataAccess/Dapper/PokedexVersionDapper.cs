@@ -10,7 +10,7 @@ namespace PokedexDataAccess.DataAccess.Dapper;
 
 public class PokedexVersionDapper : ConnectionDapper, IPokedexVersionDataAccess
 {
-    public PokedexVersionDapper(IFactoryDbConnection factory) : base(factory) { }
+    public PokedexVersionDapper(FactoryDbConnection factory) : base(factory) { }
 
     public async Task Delete(int versionId)
     {

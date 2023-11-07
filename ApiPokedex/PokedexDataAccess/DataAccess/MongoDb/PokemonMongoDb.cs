@@ -1,4 +1,6 @@
-﻿using MongoDB.Driver;
+﻿using Dapper;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using PokedexDataAccess.DataAccess.MongoDb.Abstract;
 using PokedexDataAccess.DataAccess.MongoDb.CollectionNames;
@@ -38,6 +40,32 @@ public class PokemonMongoDb : ConnectionMongo, IPokemonDataAccess
             result = await collection.FindAsync(((ConnectionMongo)tran).Session, _ => true);
 
         return result.ToList().Select(x => MongoDbMapper.ToPokemonModel(x));
+    }
+
+    public async Task<IEnumerable<PokemonModel>> GetPagedBasicPokemon(int start, int quantity)
+    {
+        var collection = _conn.GetCollection<PokemonModelMongoDb>(MongoCollections.Pokemons);
+        var result = await collection.FindAsync(pok => pok.Id >= start && pok.Id < (quantity + start));
+        return result.ToList().Select(x => MongoDbMapper.ToPokemonModel(x));
+    }
+
+    public async Task<IEnumerable<PokemonModel>> GetPagedBasicPokemonInTransaction(int start, int quantity, IDataAccessTransaction tran)
+    {
+        var collection = _conn.GetCollection<PokemonModelMongoDb>(MongoCollections.Pokemons);
+        var result = await collection.FindAsync(((ConnectionMongo)tran).Session, pok => pok.Id >= start && pok.Id < (quantity + start));
+        return result.ToList().Select(x => MongoDbMapper.ToPokemonModel(x));
+    }
+
+    public async Task<long> GetNumberOfPokemons()
+    {
+        var collection = _conn.GetCollection<PokemonModelMongoDb>(MongoCollections.Pokemons);
+        return await collection.CountDocumentsAsync(_ => true);
+    }
+
+    public async Task<long> GetNumberOfPokemonsInTransaction(IDataAccessTransaction tran)
+    {
+        var collection = _conn.GetCollection<PokemonModelMongoDb>(MongoCollections.Pokemons);
+        return await collection.CountDocumentsAsync(((ConnectionMongo)tran).Session, _ => true);
     }
 
     public async Task<PokemonModel> GetPokemon(int pokemonId, int versionId)

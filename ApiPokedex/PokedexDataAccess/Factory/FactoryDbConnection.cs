@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 
 namespace PokedexDataAccess.Factory
 {
-    public class FactoryDbConnection : IFactoryDbConnection
+    public class FactoryDbConnection
     {
         private readonly string _connectionString;
 

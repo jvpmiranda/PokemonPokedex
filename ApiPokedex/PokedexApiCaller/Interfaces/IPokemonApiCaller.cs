@@ -8,6 +8,8 @@ namespace PokedexApiCaller.Interfaces
         Task Delete(int pokemonId);
         Task<OutGetBasicInfoPokemon> GetBasicInfo(int pokemonId);
         Task<OutPokemon> GetInfo(int pokemonId, int versionId);
+        Task<OutGetBasicInfoPokemon> GetPagedBasicInfo(int page, int quantity);
+        Task<long> GetNumberOfPokemons();
         Task Post(InPokemon pokemon);
         Task Put(InPokemon pokemon);
     }

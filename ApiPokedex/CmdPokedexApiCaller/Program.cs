@@ -1,12 +1,11 @@
-﻿using DatabaseUtilitary.AppSettings;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PokedexApiCaller.Config;
 using PokedexApiCaller.Contract.v1.In;
 using PokedexApiCaller.Contract.v1.Out;
+using PokedexApiCaller.Factory;
 using PokedexApiCaller.Interfaces;
 using PokedexApiCaller.Services;
-using System.Text;
 
 namespace DatabaseUtilitary;
 
@@ -16,44 +15,32 @@ internal class Program
     {
         Console.WriteLine("Api Caller!");
 
-        var configuration = StartConfiguration();
-        JwtSettings jwtSettings = new();
-        ApiUrl apiUrl = new();
-        ConfigurationBinder.Bind(configuration, "JwtSettings", jwtSettings);
-        ConfigurationBinder.Bind(configuration, "ApiUrl", apiUrl);
+        var host = StartServices();
+        var buildDest = StartServices();
 
-        //var buildOrig = StartServices(jwtSettings, apiUrl.PokedexMongoDb);
-        //var buildDest = StartServices(jwtSettings, apiUrl.PokedexSqlServer);
-
-        //var deuBom1 = MigrateImage(buildOrig, buildDest).Result;
+        var deuBom1 = MigrateImage(buildDest).Result;
         //var deuBom2 = MigratePokedexVersions(buildOrig, buildDest).Result;
         //var deuBom3 = MigratePokemon(buildOrig, buildDest).Result;
 
         Console.ReadKey();
     }
 
-    static async Task<bool> MigrateImage(IHost buildOrig, IHost buildDest)
+    static async Task<bool> MigrateImage(IHost buildOrig)
     {
 
         var authOrig = buildOrig.Services.GetRequiredService<IAuthApiCaller>();
         var pokemonOrig = buildOrig.Services.GetRequiredService<IPokemonApiCaller>();
         var imageOrig = buildOrig.Services.GetRequiredService<IPokemonImageApiCaller>();
 
-        var authDest = buildDest.Services.GetRequiredService<IAuthApiCaller>();
-        var imageDest = buildDest.Services.GetRequiredService<IPokemonImageApiCaller>();
-
         pokemonOrig.Auth = await authOrig.GetToken("Joao");
-        var pokemons = await pokemonOrig.GetBasicInfo(0);
-        imageDest.Auth = await authDest.GetToken("Joao");
+        var pokemons = await pokemonOrig.GetBasicInfo(1);
 
         Parallel.ForEach(pokemons, pok =>
         {
             imageOrig.Auth = authOrig.GetToken("Joao").Result;
-            imageDest.Auth = authDest.GetToken("Joao").Result;
 
             Console.WriteLine("Pokemon: " + pok.Name);
             var img = imageOrig.GetImage(pok.Id).Result;
-            imageDest.Post(ConvertToInImage(img));
 
         });
 
@@ -110,24 +97,19 @@ internal class Program
         return true;
     }
 
-    static IConfigurationRoot StartConfiguration()
+    static IHost StartServices()
     {
-        var config = new ConfigurationBuilder();
-        config.SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-        return config.Build();
-    }
-
-    static IHost StartServices(JwtSettings jwtSettings, string url)
-    {
-        var host = Host.CreateDefaultBuilder();
-        host.ConfigureServices((context, services) =>
-        {
-            services.AddTransient<IPokemonImageApiCaller>(x => new PokemonImageApiCaller(url));
-            services.AddTransient<IPokemonApiCaller>(x => new PokemonApiCaller(url));
-            services.AddTransient<IPokedexVersionApiCaller>(x => new PokedexVersionApiCaller(url));
-            services.AddScoped<IAuthApiCaller>(x => new AuthApiCaller(url, jwtSettings.Secret));
-        });
+        var host = Host.CreateDefaultBuilder()
+            .ConfigureServices((builder, services) =>
+            {
+                services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+                services.Configure<PokedexSettings>(builder.Configuration.GetSection("PokedexSettings"));
+                services.AddTransient<IPokemonImageApiCaller, PokemonImageApiCaller>();
+                services.AddTransient<IPokemonApiCaller, PokemonApiCaller>();
+                services.AddTransient<IPokedexVersionApiCaller, PokedexVersionApiCaller>();
+                services.AddScoped<IAuthApiCaller, AuthApiCaller>();
+                services.AddSingleton<FactoryHttpClient>();
+            });
         return host.Build();
     }
 
@@ -162,7 +144,7 @@ internal class Program
             EvolvesToId = pokInfo.EvolvesTo.Select(e => e.Id),
             EvolvesFromId = pokInfo.EvolvesFrom?.Id,
             Versions = pokInfo.Versions.Select(v =>
-                new InPokemonVersion()
+                new InPokemonPokedexDescription()
                 {
                     VersionId = v.VersionId,
                     Description = v.Description,

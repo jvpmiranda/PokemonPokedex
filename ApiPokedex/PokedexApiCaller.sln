@@ -5,7 +5,9 @@ VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokedexApiCaller", "PokedexApiCaller\PokedexApiCaller.csproj", "{490923E3-6779-4CF5-95E3-EF0F2D494424}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiCaller", "ApiCaller\ApiCaller.csproj", "{B5E07C5A-367B-4361-AA88-043ED1FB7900}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CmdPokedexApiCaller", "CmdPokedexApiCaller\CmdPokedexApiCaller.csproj", "{79C82F45-5B1C-4FB7-A54A-673A541F93F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsPokedexApiCaller", "WinFormsPokedexApiCaller\WinFormsPokedexApiCaller.csproj", "{E436EB0B-A024-4A2C-8D48-E4475140C689}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +19,14 @@ Global
 		{490923E3-6779-4CF5-95E3-EF0F2D494424}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{490923E3-6779-4CF5-95E3-EF0F2D494424}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{490923E3-6779-4CF5-95E3-EF0F2D494424}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B5E07C5A-367B-4361-AA88-043ED1FB7900}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5E07C5A-367B-4361-AA88-043ED1FB7900}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5E07C5A-367B-4361-AA88-043ED1FB7900}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B5E07C5A-367B-4361-AA88-043ED1FB7900}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79C82F45-5B1C-4FB7-A54A-673A541F93F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79C82F45-5B1C-4FB7-A54A-673A541F93F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79C82F45-5B1C-4FB7-A54A-673A541F93F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79C82F45-5B1C-4FB7-A54A-673A541F93F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E436EB0B-A024-4A2C-8D48-E4475140C689}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E436EB0B-A024-4A2C-8D48-E4475140C689}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E436EB0B-A024-4A2C-8D48-E4475140C689}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E436EB0B-A024-4A2C-8D48-E4475140C689}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

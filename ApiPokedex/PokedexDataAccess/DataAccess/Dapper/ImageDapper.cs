@@ -10,7 +10,7 @@ namespace PokedexDataAccess.DataAccess.Dapper;
 
 public class ImageDapper : ConnectionDapper, IImageDataAccess
 {
-    public ImageDapper(IFactoryDbConnection factory) : base(factory) { }
+    public ImageDapper(FactoryDbConnection factory) : base(factory) { }
 
     public async Task Delete(int pokemonId)
     {

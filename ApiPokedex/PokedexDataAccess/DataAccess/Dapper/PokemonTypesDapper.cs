@@ -11,7 +11,7 @@ namespace PokedexDataAccess.DataAccess.Dapper;
 
 public class PokemonTypesDapper : ConnectionDapper, IPokemonTypesDataAccess
 {
-    public PokemonTypesDapper(IFactoryDbConnection factory) : base(factory) { }
+    public PokemonTypesDapper(FactoryDbConnection factory) : base(factory) { }
 
     public async Task Delete(int typeId)
     {

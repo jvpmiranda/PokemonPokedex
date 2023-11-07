@@ -22,6 +22,17 @@ public class PokemonService : IPokemonService
         return await _pokemon.GetBasicPokemon(pokemonId);
     }
 
+    public async Task<IEnumerable<PokemonModel>> GetPagedBasicPokemon(int page, int quantity)
+    {
+        var startIndex = (page * quantity - quantity) + 1;
+        return await _pokemon.GetPagedBasicPokemon(startIndex, quantity);
+    }
+
+    public async Task<long> GetNumberOfPokemons()
+    {
+        return await _pokemon.GetNumberOfPokemons();
+    }
+
     public async Task<PokemonModel> GetPokemon(int pokemonId, int versionId)
     {
         PokemonModel pokemonFull = await _pokemon.GetPokemon(pokemonId, versionId);
@@ -33,8 +44,11 @@ public class PokemonService : IPokemonService
 
         var lsPokemon = new List<PokemonModel>();
         foreach (var pok in pokemonFull.EvolvesTo)
-            lsPokemon.Add(GetEvolutionCicle(pok.Id, versionId));
-
+        {
+            var poke = GetEvolutionCicle(pok.Id, versionId);
+            if (poke.Id > 0)
+                lsPokemon.Add(poke);
+        }
         pokemonFull.EvolvesTo = lsPokemon;
 
         return pokemonFull;

@@ -29,18 +29,35 @@ public class PokemonController : ControllerBase
     /// <returns>List of N pokemon that match the key used for searching</returns>
     [Authorize(Roles = "Authenticated")]
     [HttpGet("{pokemonId?}")]
-    public ActionResult<OutGetBasicInfoPokemon> GetBasicInfo(int? pokemonId = null)
+    public async Task<ActionResult<OutGetBasicInfoPokemon>> GetBasicInfo(int? pokemonId = null)
     {
-        var pokemon = _pokedex.GetBasicPokemon(pokemonId).Result;
+        var pokemon = await _pokedex.GetBasicPokemon(pokemonId);
         var result = _mapper.Map<IEnumerable<OutBasicInfoPokemon>>(pokemon);
         return Ok(result);
     }
 
     [Authorize(Roles = "Authenticated")]
-    [HttpGet("{pokemonId}/{versionId}")]
-    public ActionResult<OutPokemon> GetInfo(int pokemonId, int versionId)
+    [HttpGet("{page}/{quantity}")]
+    public async Task<ActionResult<OutGetBasicInfoPokemon>> GetPagedBasicInfo(int page, int quantity)
     {
-        var pok = _pokedex.GetPokemon(pokemonId, versionId).Result;
+        var pokemon = await _pokedex.GetPagedBasicPokemon(page, quantity);
+        var result = _mapper.Map<IEnumerable<OutBasicInfoPokemon>>(pokemon);
+        return Ok(result);
+    }
+
+    [Authorize(Roles = "Authenticated")]
+    [HttpGet]
+    public async Task<ActionResult<long>> GetNumberOfPokemons()
+    {
+        var result = await _pokedex.GetNumberOfPokemons();
+        return Ok(result);
+    }
+
+    [Authorize(Roles = "Authenticated")]
+    [HttpGet("{pokemonId}/{versionId}")]
+    public async Task<ActionResult<OutPokemon>> GetInfo(int pokemonId, int versionId)
+    {
+        var pok = await _pokedex.GetPokemon(pokemonId, versionId);
         OutPokemon results = _mapper.Map<OutPokemon>(pok);
         return Ok(results);
     }

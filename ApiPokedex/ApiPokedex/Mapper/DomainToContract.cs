@@ -15,7 +15,7 @@ public class DomainToContract : Profile
     }
 
     private void PokemonGetBasicInfo() => CreateMap<PokemonModel, OutBasicInfoPokemon>();
-    
+
     private void PokemonGetInfo()
     {
         CreateMap<PokemonModel, OutPokemon>();

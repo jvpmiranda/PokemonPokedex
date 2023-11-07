@@ -18,12 +18,12 @@ public class InPokemon
 
     public IEnumerable<InType> Types { get; set; }
 
-    public IEnumerable<InPokemonVersion> Versions { get; set; }
+    public IEnumerable<InPokemonPokedexDescription> Versions { get; set; }
 
     public string ImageName { get; set; }
 }
 
-public class InPokemonVersion
+public class InPokemonPokedexDescription
 {
     public int VersionId { get; set; }
 

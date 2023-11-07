@@ -2,10 +2,13 @@
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Configuration;
 using PokedexDataAccess.DataAccess.Dapper.Abstract;
+using PokedexDataAccess.DataAccess.MongoDb.Abstract;
+using PokedexDataAccess.DataAccess.MongoDb.CollectionNames;
 using PokedexDataAccess.Extensions.Dapper;
 using PokedexDataAccess.Factory;
 using PokedexDataAccess.Interfaces;
 using PokedexDataAccess.Interfaces.Infrastructure;
+using PokedexDataAccess.Model.MongoDb;
 using PokedexModels.Model;
 using System.Data;
 
@@ -13,7 +16,7 @@ namespace PokedexDataAccess.DataAccess.Dapper;
 
 public class PokemonDapper : ConnectionDapper, IPokemonDataAccess
 {
-    public PokemonDapper(IFactoryDbConnection factory) : base(factory) { }
+    public PokemonDapper(FactoryDbConnection factory) : base(factory) { }
 
     public async Task<IEnumerable<PokemonModel>> GetBasicPokemon(int? pokemonId)
     {
@@ -25,6 +28,32 @@ public class PokemonDapper : ConnectionDapper, IPokemonDataAccess
     {
         using IDbConnection conn = GetDbConnection();
         return await conn.QueryAsync<PokemonModel>("sp_pokedex_GetBasicInfoPokemon", new { pokemonId }, commandType: CommandType.StoredProcedure, transaction: GetDbTransaction(tran));
+    }
+
+    public async Task<IEnumerable<PokemonModel>> GetPagedBasicPokemon(int start, int quantity)
+    {
+        using IDbConnection conn = GetDbConnection();
+        return await conn.QueryAsync<PokemonModel>("sp_pokedex_GetPagedBasicPokemon", new { start, quantity }, commandType: CommandType.StoredProcedure);
+    }
+
+    public async Task<IEnumerable<PokemonModel>> GetPagedBasicPokemonInTransaction(int start, int quantity, IDataAccessTransaction tran)
+    {
+        using IDbConnection conn = GetDbConnection();
+        return await conn.QueryAsync<PokemonModel>("sp_pokedex_GetPagedBasicPokemon", new { start, quantity }, commandType: CommandType.StoredProcedure, transaction: GetDbTransaction(tran));
+    }
+
+    public async Task<long> GetNumberOfPokemons()
+    {
+        using IDbConnection conn = GetDbConnection();
+        var result = await conn.QueryAsync<int>("sp_pokedex_GetNumberOfPokemons", new { }, commandType: CommandType.StoredProcedure);
+        return result.First();
+    }
+
+    public async Task<long> GetNumberOfPokemonsInTransaction(IDataAccessTransaction tran)
+    {
+        using IDbConnection conn = GetDbConnection();
+        var result = await conn.QueryAsync<int>("sp_pokedex_GetNumberOfPokemons", new { }, commandType: CommandType.StoredProcedure, transaction: GetDbTransaction(tran));
+        return result.First();
     }
 
     public async Task<PokemonModel> GetPokemon(int pokemonId, int versionId)

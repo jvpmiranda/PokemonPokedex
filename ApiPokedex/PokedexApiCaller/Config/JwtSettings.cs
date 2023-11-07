@@ -1,4 +1,4 @@
-﻿namespace DatabaseUtilitary.AppSettings;
+﻿namespace PokedexApiCaller.Config;
 
 public class JwtSettings
 {

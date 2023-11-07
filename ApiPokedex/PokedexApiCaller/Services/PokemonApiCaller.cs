@@ -8,15 +8,20 @@ namespace PokedexApiCaller.Services;
 
 public class PokemonApiCaller : IPokemonApiCaller
 {
-    private readonly string _baseUrlApi;
+    private HttpClient _client;
+    private readonly FactoryHttpClient _factory;
     public Authentication Auth { get; set; }
 
-    public PokemonApiCaller(string baseUrlApi) => _baseUrlApi = baseUrlApi;
+    public PokemonApiCaller(FactoryHttpClient factory)
+    {
+        _factory = factory;
+        _client = _factory.Create();
+    }
 
     public async Task<OutGetBasicInfoPokemon> GetBasicInfo(int pokemonId)
     {
-        HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
-        HttpResponseMessage response = await client.GetAsync($"api/v1/Pokemon/GetBasicInfo/{pokemonId}/");
+        _client.SetAuthentication(Auth);
+        HttpResponseMessage response = await _client.GetAsync($"api/v1/Pokemon/GetBasicInfo/{pokemonId}/").ConfigureAwait(false);
         if (response.IsSuccessStatusCode)
             return await response.Content.ReadAsAsync<OutGetBasicInfoPokemon>();
 
@@ -25,8 +30,8 @@ public class PokemonApiCaller : IPokemonApiCaller
 
     public async Task<OutPokemon> GetInfo(int pokemonId, int versionId)
     {
-        HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
-        HttpResponseMessage response = await client.GetAsync($"api/v1/Pokemon/GetInfo/{pokemonId}/{versionId}");
+        _client.SetAuthentication(Auth);
+        HttpResponseMessage response = await _client.GetAsync($"api/v1/Pokemon/GetInfo/{pokemonId}/{versionId}").ConfigureAwait(false);
         if (response.IsSuccessStatusCode)
             return await response.Content.ReadAsAsync<OutPokemon>();
 
@@ -35,26 +40,39 @@ public class PokemonApiCaller : IPokemonApiCaller
 
     public async Task Post(InPokemon pokemon)
     {
-        HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
-        await client.PostAsJsonAsync($"api/v1/Pokemon/Post", pokemon);
+        _client.SetAuthentication(Auth);
+        await _client.PostAsJsonAsync($"api/v1/Pokemon/Post", pokemon).ConfigureAwait(false);
     }
 
     public async Task Put(InPokemon pokemon)
     {
-        HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
-        await client.PutAsJsonAsync($"api/v1/Pokemon/Put", pokemon);
+        _client.SetAuthentication(Auth);
+        await _client.PutAsJsonAsync($"api/v1/Pokemon/Put", pokemon).ConfigureAwait(false);
     }
 
     public async Task Delete(int pokemonId)
     {
-        try
-        {
-            HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
-            await client.DeleteAsync($"api/v1/Pokemon/Delete/{pokemonId}");
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
+        _client.SetAuthentication(Auth);
+        await _client.DeleteAsync($"api/v1/Pokemon/Delete/{pokemonId}").ConfigureAwait(false);
+    }
+        
+    public async Task<OutGetBasicInfoPokemon> GetPagedBasicInfo(int page, int quantity)
+    {
+        _client.SetAuthentication(Auth);
+        HttpResponseMessage response = await _client.GetAsync($"api/v1/Pokemon/GetPagedBasicInfo/{page}/{quantity}").ConfigureAwait(false);
+        if (response.IsSuccessStatusCode)
+            return await response.Content.ReadAsAsync<OutGetBasicInfoPokemon>();
+
+        return new OutGetBasicInfoPokemon();
+    }
+
+    public async Task<long> GetNumberOfPokemons()
+    {
+        _client.SetAuthentication(Auth);
+        HttpResponseMessage response = await _client.GetAsync($"api/v1/Pokemon/GetNumberOfPokemons").ConfigureAwait(false);
+        if (response.IsSuccessStatusCode)
+            return await response.Content.ReadAsAsync<long>();
+
+        return 0;
     }
 }

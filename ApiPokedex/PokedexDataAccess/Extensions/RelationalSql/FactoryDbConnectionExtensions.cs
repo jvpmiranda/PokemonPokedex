@@ -7,7 +7,7 @@ public static class FactoryDbConnectionExtensions
 {
     public static void AddFactoryDbConnection(this IServiceCollection service, string connectionString)
     {
-        service.AddSingleton<IFactoryDbConnection, FactoryDbConnection> (x =>
+        service.AddSingleton<FactoryDbConnection> (x =>
         {
             return new FactoryDbConnection(connectionString);
         });

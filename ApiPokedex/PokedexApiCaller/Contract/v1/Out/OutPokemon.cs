@@ -19,9 +19,9 @@ public class OutPokemonInfo : ErrorStatus
 
     public int GenerationNumber { get; set; }
 
-    public IEnumerable<OutPokemonVersion> Versions { get; set; }
+    public List<OutPokemonPokedexDescription> Versions { get; set; }
 
-    public IEnumerable<OutTypeOfPokemon> Types { get; set; }
+    public List<OutTypeOfPokemon> Types { get; set; }
 
     public string ImageName { get; set; }
 }
@@ -33,7 +33,7 @@ public class OutTypeOfPokemon
     public string Name { get; set; }
 }
 
-public class OutPokemonVersion
+public class OutPokemonPokedexDescription
 {
     public int VersionId { get; set; }
 

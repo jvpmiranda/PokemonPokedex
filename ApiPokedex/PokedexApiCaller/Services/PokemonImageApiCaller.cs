@@ -8,15 +8,20 @@ namespace PokedexApiCaller.Services;
 
 public class PokemonImageApiCaller : IPokemonImageApiCaller
 {
-    private readonly string _baseUrlApi;
+    private HttpClient _client;
+    private FactoryHttpClient _factory;
+
     public Authentication Auth { get; set; }
 
-    public PokemonImageApiCaller(string baseUrlApi) => _baseUrlApi = baseUrlApi;
-
+    public PokemonImageApiCaller(FactoryHttpClient factory)
+    {
+        _factory = factory;
+        _client = _factory.Create();
+    }
     public async Task<OutImage> GetImage(int pokemonId)
     {
-        HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
-        HttpResponseMessage response = await client.GetAsync($"api/v1/PokemonImage/GetImage/{pokemonId}");
+        _client.SetAuthentication(Auth);
+        HttpResponseMessage response = await _client.GetAsync($"api/v1/PokemonImage/GetImage/{pokemonId}");
         if (response.IsSuccessStatusCode)
             return await response.Content.ReadAsAsync<OutImage>();
 
@@ -25,19 +30,19 @@ public class PokemonImageApiCaller : IPokemonImageApiCaller
 
     public async Task Post(InImage image)
     {
-        HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
-        await client.PostAsJsonAsync($"api/v1/PokemonImage/Post", image);
+        _client.SetAuthentication(Auth);
+        await _client.PostAsJsonAsync($"api/v1/PokemonImage/Post", image);
     }
 
     public async Task Put(InImage image)
     {
-        HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
-        await client.PutAsJsonAsync($"api/v1/PokemonImage/Put", image);
+        _client.SetAuthentication(Auth);
+        await _client.PutAsJsonAsync($"api/v1/PokemonImage/Put", image);
     }
 
     public async Task Delete(int pokemonId)
     {
-        HttpClient client = HttpClientPokemonApiFactory.Create(_baseUrlApi, Auth);
-        await client.DeleteAsync($"api/v1/PokemonImage/Delete/{pokemonId}");
+        _client.SetAuthentication(Auth);
+        await _client.DeleteAsync($"api/v1/PokemonImage/Delete/{pokemonId}");
     }
 }
