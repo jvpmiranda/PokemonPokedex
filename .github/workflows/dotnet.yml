@@ -33,5 +33,5 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: PokedexApi
-        path: ApiPokedex/ApiPublished/**
+        path: ApiPokedex/ApiPokedex/PokedexApi/**
         if-no-files-found: error
